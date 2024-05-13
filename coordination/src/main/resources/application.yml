@@ -26,10 +26,7 @@ spring:
                     autocommit: false
         open-in-view: false
         defer-datasource-initialization: true
-    devtools:
-        livereload:
-            enabled: false
-
+   
 server:
     port: 8080
     tomcat:
