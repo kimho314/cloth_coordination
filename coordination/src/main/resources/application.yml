@@ -1,7 +1,9 @@
 spring:
     application:
         name: cloth-coordination
-
+    devtools:
+        restart:
+            enabled: false
     sql:
         init:
             mode: always
@@ -26,7 +28,7 @@ spring:
                     autocommit: false
         open-in-view: false
         defer-datasource-initialization: true
-   
+
 server:
     port: 8080
     tomcat:

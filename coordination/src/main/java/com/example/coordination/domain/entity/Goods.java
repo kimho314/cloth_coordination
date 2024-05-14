@@ -1,45 +1,28 @@
 package com.example.coordination.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.*;
+import com.example.coordination.domain.enums.Category;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @Entity
 @Table(name = "GOODS")
-@NoArgsConstructor
-@AllArgsConstructor
 public class Goods extends BaseEntity {
     @Id
-    @Column(name = "BRAND_NAME", nullable = false, length = 1000)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false)
+    private Long id;
+
+    @Column(name = "BRAND_NAME", length = 1000)
     private String brandName;
 
-    @Column(name = "TOP")
-    private Integer top;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "CATEGORY")
+    private Category category;
 
-    @Column(name = "OUTER")
-    private Integer outer;
-
-    @Column(name = "PANTS")
-    private Integer pants;
-
-    @Column(name = "SNEAKERS")
-    private Integer sneakers;
-
-    @Column(name = "BAG")
-    private Integer bag;
-
-    @Column(name = "HAT")
-    private Integer hat;
-
-    @Column(name = "SOCKS")
-    private Integer socks;
-
-    @Column(name = "ACCESSORY")
-    private Integer accessory;
+    @Column(name = "PRICE")
+    private Integer price;
 
 }
