@@ -16,13 +16,13 @@ public class AdminController {
 
     @GetMapping("/goods")
     public ResponseEntity<GetGoodsResponseDto> getGoods() {
-        GetGoodsResponseDto response = adminService.getGoods();
+        GetGoodsResponseDto response = adminService.mappedToGoods();
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/brand")
     public ResponseEntity<Void> addBrandName(@RequestBody BrandRequestDto request) {
-        adminService.addBrandName(request.brandName());
+        adminService.addBrandName(request);
         return ResponseEntity.ok(null);
     }
 

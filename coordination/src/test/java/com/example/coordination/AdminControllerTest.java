@@ -2,6 +2,7 @@ package com.example.coordination;
 
 import com.example.coordination.api.dto.AddCategoryRequestDto;
 import com.example.coordination.api.dto.BrandRequestDto;
+import com.example.coordination.api.dto.CategoryPriceDto;
 import com.example.coordination.domain.entity.Goods;
 import com.example.coordination.domain.enums.Category;
 import com.example.coordination.domain.repository.GoodsRepository;
@@ -55,7 +56,30 @@ public class AdminControllerTest {
     @Transactional
     void addBrandTest() throws Exception {
         final String testBrandName = "AA";
-        BrandRequestDto request = new BrandRequestDto(testBrandName);
+
+        CategoryPriceDto priceDto1 = CategoryPriceDto.builder()
+                .category(Category.TOPS)
+                .build();
+        CategoryPriceDto priceDto2 = CategoryPriceDto.builder()
+                .category(Category.OUTER)
+                .price(10_000)
+                .build();
+        CategoryPriceDto priceDto3 = CategoryPriceDto.builder()
+                .category(Category.SNEAKERS)
+                .build();
+        CategoryPriceDto priceDto4 = CategoryPriceDto.builder()
+                .category(Category.BAG)
+                .build();
+        CategoryPriceDto priceDto5 = CategoryPriceDto.builder()
+                .category(Category.HAT)
+                .build();
+        CategoryPriceDto priceDto6 = CategoryPriceDto.builder()
+                .category(Category.SOCKS)
+                .build();
+        CategoryPriceDto priceDto7 = CategoryPriceDto.builder()
+                .category(Category.ACCESSORY)
+                .build();
+        BrandRequestDto request = new BrandRequestDto(testBrandName, List.of(priceDto1, priceDto2, priceDto3, priceDto4, priceDto5, priceDto6, priceDto7));
 
         ResultActions perform = mvc.perform(post("/admin/brand")
                 .characterEncoding(StandardCharsets.UTF_8)
@@ -68,6 +92,14 @@ public class AdminControllerTest {
 
         List<Goods> goods = goodsRepository.findAllByBrandName(testBrandName);
         Assertions.assertFalse(goods.isEmpty());
+        goods.forEach(it -> {
+            if (it.getCategory().equals(Category.OUTER)) {
+                Assertions.assertEquals(10_000, it.getPrice());
+            }
+            else {
+                Assertions.assertEquals(0, it.getPrice());
+            }
+        });
     }
 
     @Test

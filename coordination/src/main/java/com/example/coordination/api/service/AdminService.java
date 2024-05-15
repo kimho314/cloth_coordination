@@ -1,6 +1,7 @@
 package com.example.coordination.api.service;
 
 import com.example.coordination.api.dto.AddCategoryRequestDto;
+import com.example.coordination.api.dto.BrandRequestDto;
 import com.example.coordination.api.dto.GetGoodsResponseDto;
 import com.example.coordination.api.dto.GoodsDto;
 import com.example.coordination.domain.entity.Goods;
@@ -21,9 +22,19 @@ public class AdminService {
 
 
     @Transactional
-    public void addBrandName(String brandName) {
-        List<Goods> goodsList = Goods.createDefaultWithBrandName(brandName);
+    public void addBrandName(BrandRequestDto request) {
+        List<Goods> goodsList = mappedToGoods(request);
         goodsRepository.saveAll(goodsList);
+    }
+
+    private static List<Goods> mappedToGoods(BrandRequestDto request) {
+        return request.categoryPriceDtos().stream()
+                .map(it -> Goods.builder()
+                        .brandName(request.brandName())
+                        .category(it.category())
+                        .price(it.price() == null ? 0 : it.price())
+                        .build())
+                .toList();
     }
 
     @Transactional
@@ -35,14 +46,14 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    public GetGoodsResponseDto getGoods() {
+    public GetGoodsResponseDto mappedToGoods() {
         Map<String, List<GoodsDto>> goodsMap = goodsRepository.findAll().stream()
                 .map(it -> GoodsDto.builder()
                         .brandName(it.getBrandName())
                         .category(it.getCategory())
                         .price(it.getPrice())
                         .build())
-                .collect(Collectors.groupingBy(it -> it.brandName()));
+                .collect(Collectors.groupingBy(GoodsDto::brandName));
         return new GetGoodsResponseDto(goodsMap);
     }
 

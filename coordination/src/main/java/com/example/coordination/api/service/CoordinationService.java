@@ -32,7 +32,7 @@ public class CoordinationService {
 
     private static long getCategoriesTotalPrice(List<CategoryMinPriceDto> result) {
         return result.stream()
-                .mapToLong(it -> it.price())
+                .mapToLong(CategoryMinPriceDto::price)
                 .sum();
     }
 
