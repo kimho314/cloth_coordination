@@ -5,10 +5,13 @@ import com.example.coordination.api.dto.GetCategoriesMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoryMinMaxPriceResponseDto;
 import com.example.coordination.api.service.CoordinationService;
 import com.example.coordination.domain.enums.Category;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+@Slf4j
 @SpringBootTest
 public class CoordinationServiceTest {
     @Autowired
@@ -17,20 +20,32 @@ public class CoordinationServiceTest {
     @Test
     void getCategoriesMinPriceTest() {
         GetCategoriesMinPriceResponseDto categoriesMinPrice = coordinationService.getCategoriesMinPrice();
-        System.out.println(categoriesMinPrice.totalPrice());
-        categoriesMinPrice.categoryMinPriceDtos().forEach(it -> System.out.println(it));
+        log.info(categoriesMinPrice.toString());
+
+        Assertions.assertEquals(34_100, categoriesMinPrice.totalPrice());
+        Assertions.assertEquals(8, categoriesMinPrice.categoryMinPriceDtos().size());
     }
 
     @Test
     void getBrandMinPriceTest() {
         BrandMinPriceResponseDto brandMinPrice = coordinationService.getBrandMinPrice();
-        System.out.println(brandMinPrice);
+        log.info(brandMinPrice.toString());
+
+        Assertions.assertEquals("D", brandMinPrice.brandName());
+        Assertions.assertEquals(36_100, brandMinPrice.totalPrice());
+        Assertions.assertEquals(8, brandMinPrice.categoryPriceDtos().size());
     }
 
     @Test
     void getCategoryMinMaxPriceTest() {
         final String category = Category.TOPS.name();
         GetCategoryMinMaxPriceResponseDto categoryMinMaxPrice = coordinationService.getCategoryMinMaxPrice(category);
-        System.out.println(categoryMinMaxPrice);
+        log.info(categoryMinMaxPrice.toString());
+
+        Assertions.assertEquals("상의", categoryMinMaxPrice.category().getValue());
+        Assertions.assertEquals(10_000, categoryMinMaxPrice.minPrice().price());
+        Assertions.assertEquals("C", categoryMinMaxPrice.minPrice().brandName());
+        Assertions.assertEquals("I", categoryMinMaxPrice.maxPrice().brandName());
+        Assertions.assertEquals(11_400, categoryMinMaxPrice.maxPrice().price());
     }
 }

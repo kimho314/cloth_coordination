@@ -6,4 +6,11 @@ public record GetCategoriesMinPriceResponseDto(
         Long totalPrice,
         List<CategoryMinPriceDto> categoryMinPriceDtos
 ) {
+    @Override
+    public String toString() {
+        return "GetCategoriesMinPriceResponseDto{" +
+                "totalPrice=" + totalPrice +
+                ", categoryMinPriceDtos=" + categoryMinPriceDtos +
+                '}';
+    }
 }

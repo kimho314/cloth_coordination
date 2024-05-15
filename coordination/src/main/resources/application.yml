@@ -4,6 +4,9 @@ spring:
     devtools:
         restart:
             enabled: false
+
+        livereload:
+            enabled: false
     sql:
         init:
             mode: always

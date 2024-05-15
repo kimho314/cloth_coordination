@@ -4,13 +4,17 @@ import com.example.coordination.domain.dto.GetBrandSumImpl;
 import com.example.coordination.domain.dto.GetCategoriesMinPriceImpl;
 import com.example.coordination.domain.dto.GetCategoryMinMaxPriceImpl;
 import com.example.coordination.domain.entity.Goods;
+import com.example.coordination.domain.enums.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
+
+    Optional<Goods> findByBrandNameAndCategory(String brandName, Category category);
 
     @Query(value = """
             SELECT category AS category,

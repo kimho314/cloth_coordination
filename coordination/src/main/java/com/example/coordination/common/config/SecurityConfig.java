@@ -1,11 +1,18 @@
 package com.example.coordination.common.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -22,12 +29,42 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/client/**").hasRole("CLIENT")
-                        .requestMatchers("/admin/**").hasRole("ADMIn")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(basic -> basic.disable())
+                .formLogin(form -> form.loginPage("/login").permitAll()
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .successForwardUrl("/home")
+                        .failureForwardUrl("/login?error"))
+                .logout((logout) -> logout.logoutUrl("/login?logout").permitAll());
         ;
 
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(@Qualifier("passwordEncoder") PasswordEncoder passwordEncoder) {
+        UserDetails user = User.builder()
+                .passwordEncoder(passwordEncoder::encode)
+                .username("user")
+                .password("1234")
+                .roles("CLIENT")
+                .build();
+
+        UserDetails admin = User.builder()
+                .passwordEncoder(passwordEncoder::encode)
+                .username("admin")
+                .password("1234")
+                .roles("ADMIN", "CLIENT")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
