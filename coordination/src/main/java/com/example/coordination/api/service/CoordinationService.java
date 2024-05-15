@@ -23,7 +23,7 @@ public class CoordinationService {
     @Transactional(readOnly = true)
     public GetCategoriesMinPriceResponseDto getCategoriesMinPrice() {
         List<GetCategoriesMinPriceImpl> categoryMinPrices = goodsRepository.getCategoryMinPrices();
-        List<CategoryMinPriceDto> result = getCategoryMinPriceDtos(categoryMinPrices);
+        List<CategoryMinPriceDto> result = mappedToCategoryMinPriceDtos(categoryMinPrices);
 
         long totalPrice = getCategoriesTotalPrice(result);
 
@@ -36,7 +36,7 @@ public class CoordinationService {
                 .sum();
     }
 
-    private static List<CategoryMinPriceDto> getCategoryMinPriceDtos(List<GetCategoriesMinPriceImpl> categoryMinPrices) {
+    private static List<CategoryMinPriceDto> mappedToCategoryMinPriceDtos(List<GetCategoriesMinPriceImpl> categoryMinPrices) {
         return categoryMinPrices.stream()
                 .map(it -> CategoryMinPriceDto.builder()
                         .brandName(it.getBrandName())
@@ -55,12 +55,12 @@ public class CoordinationService {
         GetBrandSumImpl minBrandSum = brandSumsOptional.get();
 
         List<Goods> goods = goodsRepository.findAllByBrandName(minBrandSum.getBrandName());
-        List<CategoryPriceDto> categoryPriceDtos = getCategoryPriceDtos(goods);
+        List<CategoryPriceDto> categoryPriceDtos = mappedToCategoryPriceDtos(goods);
 
         return new BrandMinPriceResponseDto(minBrandSum.getBrandName(), categoryPriceDtos, minBrandSum.getSumPrice());
     }
 
-    private static List<CategoryPriceDto> getCategoryPriceDtos(List<Goods> goods) {
+    private static List<CategoryPriceDto> mappedToCategoryPriceDtos(List<Goods> goods) {
         return goods.stream()
                 .map(it -> CategoryPriceDto.builder()
                         .category(it.getCategory())
@@ -74,7 +74,7 @@ public class CoordinationService {
     public GetCategoryMinMaxPriceResponseDto getCategoryMinMaxPrice(String category) {
         List<GetCategoryMinMaxPriceImpl> categoryMinMaxPrices = goodsRepository.getCategoryMinMaxPrices(category);
         if (categoryMinMaxPrices.isEmpty()) {
-            return GetCategoryMinMaxPriceResponseDto.createDefault();
+            return null;
         }
 
         return new GetCategoryMinMaxPriceResponseDto(Category.findByName(category), getMinBrandPriceDto(categoryMinMaxPrices), getMaxBrandPriceDto(categoryMinMaxPrices));
