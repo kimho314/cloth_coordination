@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Price Comparison</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<form id="radio-form">
+    <fieldset>
+        <legend>Choose your favorite fruits:</legend>
+        <input type="radio" id="TOPS" name="category" value="상의">
+        <label for="TOPS">상의</label><br>
+
+        <input type="radio" id="OUTER" name="category" value="아우터">
+        <label for="OUTER">아우터</label><br>
+
+        <input type="radio" id="PANTS" name="category" value="바지">
+        <label for="PANTS">바지</label><br>
+
+        <input type="radio" id="SNEAKERS" name="category" value="스티커즈">
+        <label for="SNEAKERS">스티커즈</label><br>
+
+        <input type="radio" id="BAG" name="category" value="가방">
+        <label for="BAG">가방</label><br>
+
+        <input type="radio" id="HAT" name="category" value="모자">
+        <label for="HAT">모자</label><br>
+
+        <input type="radio" id="SOCKS" name="category" value="양말">
+        <label for="SOCKS">양말</label><br>
+
+        <input type="radio" id="ACCESSORY" name="category" value="엑세서리">
+        <label for="ACCESSORY">엑세서리</label><br>
+    </fieldset>
+    <input type="submit" value="Submit">
+</form>
+<table id="min-price-table">
+    <thead>
+    <tr>
+        <th>최저가</th>
+    </tr>
+    <tr>
+        <th>브랜드</th>
+        <th>가격</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<table id="max-price-table">
+    <thead>
+    <tr>
+        <th>최고가</th>
+    </tr>
+    <tr>
+        <th>브랜드</th>
+        <th>가격</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<a href="#" th:href="@{'/home'}">홈으로</a>
+
+<script>
+    $(document).ready(function () {
+        $('#radio-form').on('submit', function (event) {
+            event.preventDefault();
+
+            var selectedOption = $('input[name="category"]:checked').val();
+
+            console.log('Selected option:', selectedOption);
+
+
+            $.ajax({
+                url: `/client/category/${selectedOption}/min-max-price`,
+                method: 'GET',
+                success: function (response) {
+                    console.log('Server response:', response);
+
+                    var category = response.category;
+                    var min = response.minPrice;
+                    var max = response.maxPrice;
+
+                    var lowPriceTableBody = $('#min-price-table tbody');
+                    lowPriceTableBody.empty();
+                    var lowRow = $('<tr></tr>');
+                    lowRow.append('<td>' + min.brandName + '</td>');
+                    lowRow.append('<td>' + parseInt(min.price).toLocaleString() + '</td>');
+                    lowPriceTableBody.append(lowRow);
+
+                    var maxPriceTableBody = $('#max-price-table tbody');
+                    maxPriceTableBody.empty();
+                    var maxRow = $('<tr></tr>');
+                    maxRow.append('<td>' + max.brandName + '</td>');
+                    maxRow.append('<td>' + parseInt(max.price).toLocaleString() + '</td>');
+                    maxPriceTableBody.append(maxRow);
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<table id="product-table">
+    <thead>
+    <tr>
+        <td colspan="2" class="brand">브랜드</td>
+        <td class="brand-name" id="brand-name"></td>
+    </tr>
+    <tr>
+        <th>카테고리</th>
+        <th>가격</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="2" class="total">총액</td>
+        <td class="total" id="total-price">0</td>
+    </tr>
+    </tfoot>
+</table>
+<a href="#" th:href="@{'/home'}">홈으로</a>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/client/brand/min-price',  // RESTful API 엔드포인트
+            method: 'GET',
+            success: function (data) {
+                var brandName = data.brandName;
+                var categories = data.categoryPriceDtos;
+                var totalPrice = data.totalPrice;
+
+                $('#brand-name').text(brandName);
+
+                var tableBody = $('#product-table tbody');
+                tableBody.empty();  // 기존 데이터를 지우고 새 데이터를 추가
+                categories.forEach(function (item) {
+                    var row = $('<tr></tr>');
+                    row.append('<td>' + item['category'] + '</td>');
+                    row.append('<td>' + parseInt(item['price']).toLocaleString() + '</td>');
+                    tableBody.append(row);
+                });
+                $('#total-price').text(parseInt(totalPrice).toLocaleString());
+            },
+            error: function (error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
+    });
+</script>
+</body>
+</html>

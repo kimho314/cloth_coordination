@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="kor">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      lang="kor">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div class="menu">
-    <a href="#">카테고리 별 최저 가격 브랜드</a>
-    <a href="#">최저 가격 브랜드</a>
-    <a href="#">카테고리 최저,최고 가격</a>
-    <a href="#">Contact</a>
+    <li sec:authorize="hasRole('CLIENT')">
+        <a href="/categories" id="categories-min-price">카테고리 별 최저 가격 브랜드</a>
+        <a href="/brand-min-price" id="brand-min-price">최저 가격 브랜드</a>
+        <a href="/category-min-max-price" id="category-min-max-price">카테고리 최저,최고 가격</a>
+    </li>
+    <li sec:authorize="hasRole('ADMIN')">
+        <a href="#" th:href="@{/home}">상품 리스트 조회</a>
+    </li>
 </div>
 
 <div class="content">

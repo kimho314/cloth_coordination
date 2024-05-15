@@ -40,7 +40,7 @@ public class CoordinationService {
         return categoryMinPrices.stream()
                 .map(it -> CategoryMinPriceDto.builder()
                         .brandName(it.getBrandName())
-                        .category(it.getCategory())
+                        .category(Category.findByName(it.getCategory()).getValue())
                         .price(it.getPrice())
                         .build())
                 .collect(Collectors.toList());
