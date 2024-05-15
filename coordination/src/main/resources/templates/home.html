@@ -18,6 +18,12 @@
         <a href="/admin">상품 리스트 조회</a>
     </li>
 </div>
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <p>Hello, <span th:text="${#authentication.name}"></span>!</p>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout"/>
+    </form>
+</div>
 
 <div class="content">
     <div class="header">Welcome to Our Home Page</div>

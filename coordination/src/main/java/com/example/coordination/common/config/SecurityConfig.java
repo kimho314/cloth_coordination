@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .successForwardUrl("/home")
                         .failureForwardUrl("/login?error"))
-                .logout((logout) -> logout.logoutUrl("/login?logout").permitAll());
+                .logout((logout) -> logout.logoutUrl("/logout").permitAll());
         ;
 
         return http.build();
