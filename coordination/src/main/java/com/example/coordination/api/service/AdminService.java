@@ -23,8 +23,17 @@ public class AdminService {
 
     @Transactional
     public void addBrandName(BrandRequestDto request) {
+        isDuplicatedBrandName(request);
         List<Goods> goodsList = mappedToGoods(request);
+
         goodsRepository.saveAll(goodsList);
+    }
+
+    private void isDuplicatedBrandName(BrandRequestDto request) {
+        List<Goods> goods = goodsRepository.findAllByBrandName(request.brandName());
+        if (!goods.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private static List<Goods> mappedToGoods(BrandRequestDto request) {
@@ -47,14 +56,20 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public GetGoodsResponseDto mappedToGoods() {
-        Map<String, List<GoodsDto>> goodsMap = goodsRepository.findAll().stream()
+        List<Goods> goods = goodsRepository.findAll();
+        Map<String, List<GoodsDto>> goodsMap = amppedToGoodsMap(goods);
+
+        return new GetGoodsResponseDto(goodsMap);
+    }
+
+    private static Map<String, List<GoodsDto>> amppedToGoodsMap(List<Goods> goods) {
+        return goods.stream()
                 .map(it -> GoodsDto.builder()
                         .brandName(it.getBrandName())
                         .category(it.getCategory())
                         .price(it.getPrice())
                         .build())
                 .collect(Collectors.groupingBy(GoodsDto::brandName));
-        return new GetGoodsResponseDto(goodsMap);
     }
 
     @Transactional

@@ -33,4 +33,9 @@ public class HomerController {
     public String categoryMinMaxPrice() {
         return "category-min-max-price";
     }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
 }

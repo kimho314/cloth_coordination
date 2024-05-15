@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>어드민</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<table id="product-table">
+    <thead>
+    <tr>
+        <th>브랜드</th>
+        <th>상의</th>
+        <th>아우터</th>
+        <th>바지</th>
+        <th>스니커즈</th>
+        <th>가방</th>
+        <th>모자</th>
+        <th>양말</th>
+        <th>액세서리</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<br>
+<h3>브랜드 추가</h3>
+<form id="add-brand-form">
+    <label for="brand">브랜드명:</label>
+    <input type="text" id="brand" name="brand"><br><br>
+
+    <label for="top">상의:</label>
+    <input type="text" id="top" name="top"><br><br>
+
+    <label for="outerwear">아우터:</label>
+    <input type="text" id="outerwear" name="outerwear"><br><br>
+
+    <label for="pants">바지:</label>
+    <input type="text" id="pants" name="pants"><br><br>
+
+    <label for="sneakers">스니커즈:</label>
+    <input type="text" id="sneakers" name="sneakers"><br><br>
+
+    <label for="bag">가방:</label>
+    <input type="text" id="bag" name="bag"><br><br>
+
+    <label for="hat">모자:</label>
+    <input type="text" id="hat" name="hat"><br><br>
+
+    <label for="socks">양말:</label>
+    <input type="text" id="socks" name="socks"><br><br>
+
+    <label for="accessory">액세서리:</label>
+    <input type="text" id="accessory" name="accessory"><br><br>
+
+    <input type="submit" value="add brand" id="add-brand">
+</form>
+<br>
+<h3>브랜드 삭제</h3>
+<form id="delete-brand-form">
+    <label for="brand2">브랜드명:</label>
+    <input type="text" id="brand2" name="brand"><br><br>
+
+    <input type="submit" value="delete-brand" id="delete-brand">
+</form>
+<br>
+<h3>카테고리 수정</h3>
+<form id="modify-category-form">
+    <label for="brand3">브랜드명:</label>
+    <input type="text" id="brand3" name="brand"><br><br>
+
+    <fieldset>
+        <legend>카테고리를 선택해주세요:</legend>
+        <input type="radio" id="TOPS3" name="category3" value="상의">
+        <label for="TOPS3">상의</label><br>
+
+        <input type="radio" id="OUTER3" name="category3" value="아우터">
+        <label for="OUTER3">아우터</label><br>
+
+        <input type="radio" id="PANTS3" name="category3" value="바지">
+        <label for="PANTS3">바지</label><br>
+
+        <input type="radio" id="SNEAKERS3" name="category3" value="스티커즈">
+        <label for="SNEAKERS3">스티커즈</label><br>
+
+        <input type="radio" id="BAG3" name="category3" value="가방">
+        <label for="BAG3">가방</label><br>
+
+        <input type="radio" id="HAT3" name="category3" value="모자">
+        <label for="HAT3">모자</label><br>
+
+        <input type="radio" id="SOCKS3" name="category3" value="양말">
+        <label for="SOCKS3">양말</label><br>
+
+        <input type="radio" id="ACCESSORY3" name="category3" value="엑세서리">
+        <label for="ACCESSORY3">엑세서리</label><br>
+    </fieldset>
+    <br>
+
+    <label for="price3">가격:</label>
+    <input type="text" id="price3" name="price3"><br><br>
+
+    <input type="submit" value="modify-category" id="modify-category">
+</form>
+<br>
+<a href="#" th:href="@{'/home'}">홈으로</a>
+
+<script>
+    $(document).ready(function () {
+        $('#modify-category-form').on('submit', function (event) {
+            event.preventDefault();
+            console.log("modify-category");
+
+            var brand = $('#brand3').val();
+            var selectedOption = $('input[name="category3"]:checked').val();
+            var price = $('#price3').val();
+
+            // 입력된 데이터 콘솔에 출력
+            console.log('브랜드:', brand);
+            console.log('카테고리:', selectedOption);
+            console.log('가격:', price);
+
+            var data = {
+                brandName: brand,
+                category: selectedOption,
+                price: price
+            };
+
+            $.ajax({
+                url: `/admin/category`,
+                method: 'PUT',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    console.log(data);
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error("Error fetching data: ", error);
+                    location.reload();
+                }
+            });
+        });
+
+        $('#add-brand-form').on('submit', function (event) {
+            event.preventDefault();
+            console.log("add-brand");
+
+            var brand = $('#brand').val();
+            var top = $('#top').val();
+            var outerwear = $('#outerwear').val();
+            var pants = $('#pants').val();
+            var sneakers = $('#sneakers').val();
+            var bag = $('#bag').val();
+            var hat = $('#hat').val();
+            var socks = $('#socks').val();
+            var accessory = $('#accessory').val();
+
+            console.log('브랜드:', brand);
+            console.log('상의:', top);
+            console.log('아우터:', outerwear);
+            console.log('바지:', pants);
+            console.log('스니커즈:', sneakers);
+            console.log('가방:', bag);
+            console.log('모자:', hat);
+            console.log('양말:', socks);
+            console.log('액세서리:', accessory);
+
+            var data = {
+                brandName: brand,
+                categoryPriceDtos: [
+                    {
+                        category: '상의',
+                        price: top
+                    },
+                    {
+                        category: '아우터',
+                        price: outerwear
+                    },
+                    {
+                        category: '바지',
+                        price: pants
+                    },
+                    {
+                        category: '스니커즈',
+                        price: sneakers
+                    },
+                    {
+                        category: '가방',
+                        price: bag
+                    },
+                    {
+                        category: '모자',
+                        price: hat
+                    },
+                    {
+                        category: '양말',
+                        price: socks
+                    },
+                    {
+                        category: '엑세서리',
+                        price: accessory
+                    }
+                ]
+
+            };
+
+            $.ajax({
+                url: '/admin/brand',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    console.log(data);
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error("Error fetching data: ", error);
+                    location.reload();
+                }
+            });
+        });
+
+        $('#delete-brand-form').on('submit', function (event) {
+            event.preventDefault();
+            console.log("delete-brand");
+
+            var brand = $('#brand2').val();
+
+            // 입력된 데이터 콘솔에 출력
+            console.log('브랜드:', brand);
+
+            $.ajax({
+                url: `/admin/brand/${brand}`,
+                method: 'DELETE',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    console.log(data);
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error("Error fetching data: ", error);
+                    location.reload();
+                }
+            });
+        });
+
+
+        $.ajax({
+            url: '/admin/goods',
+            method: 'GET',
+            success: function (data) {
+                var goods = data.goodsMap;
+                var tableBody = $('#product-table tbody');
+                tableBody.empty();
+
+                var keys = Object.keys(goods);
+
+                for (let i in keys) {
+                    var row = $('<tr></tr>');
+                    row.append('<td>' + keys[i] + '</td>');
+                    for (let j in goods[keys[i]]) {
+                        row.append('<td>' + goods[keys[i]][j].price + '</td>');
+                    }
+                    tableBody.append(row);
+                }
+            },
+            error: function (error) {
+                console.error("Error fetching data: ", error);
+            }
+        });
+    });
+</script>
+</body>
+</html>

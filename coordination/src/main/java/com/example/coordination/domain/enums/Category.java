@@ -9,7 +9,7 @@ public enum Category {
     TOPS("상의"),
     OUTER("아우터"),
     PANTS("바지"),
-    SNEAKERS("스티커즈"),
+    SNEAKERS("스니커즈"),
     BAG("가방"),
     HAT("모자"),
     SOCKS("양말"),
