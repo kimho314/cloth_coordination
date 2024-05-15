@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder::encode)
                 .username("admin")
                 .password("1234")
-                .roles("ADMIN", "CLIENT")
+                .roles("ADMIN")
                 .build();
 
         return new InMemoryUserDetailsManager(user, admin);

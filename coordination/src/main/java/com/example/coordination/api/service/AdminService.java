@@ -45,4 +45,9 @@ public class AdminService {
                 .collect(Collectors.groupingBy(it -> it.brandName()));
         return new GetGoodsResponseDto(goodsMap);
     }
+
+    @Transactional
+    public void deleteBrandName(String brandName) {
+        goodsRepository.deleteAllByBrandName(brandName);
+    }
 }

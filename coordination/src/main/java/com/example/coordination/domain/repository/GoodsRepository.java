@@ -14,6 +14,8 @@ import java.util.Optional;
 
 public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
+    void deleteAllByBrandName(String brandName);
+
     Optional<Goods> findByBrandNameAndCategory(String brandName, Category category);
 
     @Query(value = """
@@ -32,10 +34,12 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     @Query(value = """
             SELECT brand_name AS brandName, sum(price) AS sumPrice
             FROM goods
-            GROUP BY brand_name;
+            GROUP BY brand_name
+            ORDER BY sumPrice
+            LIMIT 1
             """
             , nativeQuery = true)
-    List<GetBrandSumImpl> getBrandSums();
+    Optional<GetBrandSumImpl> getBrandSums();
 
     @Query(value = """
             SELECT category AS catogry, brand_name AS brandName, price AS price

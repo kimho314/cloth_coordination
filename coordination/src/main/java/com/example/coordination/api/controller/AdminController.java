@@ -1,7 +1,7 @@
 package com.example.coordination.api.controller;
 
-import com.example.coordination.api.dto.AddBrandRequestDto;
 import com.example.coordination.api.dto.AddCategoryRequestDto;
+import com.example.coordination.api.dto.BrandRequestDto;
 import com.example.coordination.api.dto.GetGoodsResponseDto;
 import com.example.coordination.api.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +21,21 @@ public class AdminController {
     }
 
     @PostMapping("/brand")
-    public void addBrandName(@RequestBody AddBrandRequestDto request) {
+    public ResponseEntity<Void> addBrandName(@RequestBody BrandRequestDto request) {
         adminService.addBrandName(request.brandName());
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/brand/{brandName}")
+    public ResponseEntity<Void> deleteBrandName(@PathVariable String brandName) {
+        adminService.deleteBrandName(brandName);
+        return ResponseEntity.ok(null);
     }
 
     @PutMapping("/category")
-    public void addCategory(@RequestBody AddCategoryRequestDto request) {
+    public ResponseEntity<Void> modifyCategory(@RequestBody AddCategoryRequestDto request) {
         adminService.addCategory(request);
+        return ResponseEntity.ok(null);
     }
+
 }
