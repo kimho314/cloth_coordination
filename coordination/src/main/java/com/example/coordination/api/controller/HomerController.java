@@ -25,7 +25,7 @@ public class HomerController {
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
         }
-        return "redirect:/login?logout"; // 로그아웃 후 리다이렉트할 URL을 설정합니다.
+        return "redirect:/login?logout";
     }
 
     @RequestMapping(value = {"/home", "/"}, method = {RequestMethod.POST, RequestMethod.GET})

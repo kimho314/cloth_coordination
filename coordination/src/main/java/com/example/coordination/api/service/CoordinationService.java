@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -81,18 +82,29 @@ public class CoordinationService {
     }
 
     private static BrandPriceDto getMaxBrandPriceDto(List<GetCategoryMinMaxPriceImpl> categoryMinMaxPrices) {
-        return getBrandPriceDto(categoryMinMaxPrices, 1);
+        GetCategoryMinMaxPriceImpl maxPrice = categoryMinMaxPrices.stream()
+                .max(Comparator.comparing(GetCategoryMinMaxPriceImpl::getPrice))
+                .orElse(null);
+        if (maxPrice == null) {
+            return null;
+        }
+        return getBrandPriceDto(maxPrice);
     }
 
     private static BrandPriceDto getMinBrandPriceDto(List<GetCategoryMinMaxPriceImpl> categoryMinMaxPrices) {
-        return getBrandPriceDto(categoryMinMaxPrices, 0);
+        GetCategoryMinMaxPriceImpl maxPrice = categoryMinMaxPrices.stream()
+                .min(Comparator.comparing(GetCategoryMinMaxPriceImpl::getPrice))
+                .orElse(null);
+        if (maxPrice == null) {
+            return null;
+        }
+        return getBrandPriceDto(maxPrice);
     }
 
-    private static BrandPriceDto getBrandPriceDto(List<GetCategoryMinMaxPriceImpl> categoryMinMaxPrices, int index) {
-        GetCategoryMinMaxPriceImpl min = categoryMinMaxPrices.get(index);
+    private static BrandPriceDto getBrandPriceDto(GetCategoryMinMaxPriceImpl categoryMinMaxPrices) {
         return BrandPriceDto.builder()
-                .brandName(min.getBrandName())
-                .price(min.getPrice())
+                .brandName(categoryMinMaxPrices.getBrandName())
+                .price(categoryMinMaxPrices.getPrice())
                 .build();
     }
 }

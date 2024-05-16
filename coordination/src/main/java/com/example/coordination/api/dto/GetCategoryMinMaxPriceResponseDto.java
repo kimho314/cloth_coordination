@@ -9,10 +9,6 @@ public record GetCategoryMinMaxPriceResponseDto(
         BrandPriceDto minPrice,
         BrandPriceDto maxPrice
 ) {
-    public static GetCategoryMinMaxPriceResponseDto createDefault() {
-        return GetCategoryMinMaxPriceResponseDto.builder()
-                .build();
-    }
 
     @Override
     public String toString() {
