@@ -53,7 +53,7 @@
     <label for="accessory">액세서리:</label>
     <input type="text" id="accessory" name="accessory"><br><br>
 
-    <input type="submit" value="add brand" id="add-brand">
+    <input type="submit" value="브랜드 추가" id="add-brand">
 </form>
 <br>
 <h3>브랜드 삭제</h3>
@@ -61,7 +61,46 @@
     <label for="brand2">브랜드명:</label>
     <input type="text" id="brand2" name="brand"><br><br>
 
-    <input type="submit" value="delete-brand" id="delete-brand">
+    <input type="submit" value="브랜드 삭제" id="delete-brand">
+</form>
+<br>
+<h3>카테고리 추가</h3>
+<form id="add-category-form">
+    <label for="brand3">브랜드명:</label>
+    <input type="text" id="brand4" name="brand"><br><br>
+
+    <fieldset>
+        <legend>카테고리를 선택해주세요:</legend>
+        <input type="radio" id="TOPS4" name="category4" value="상의">
+        <label for="TOPS4">상의</label><br>
+
+        <input type="radio" id="OUTER4" name="category4" value="아우터">
+        <label for="OUTER4">아우터</label><br>
+
+        <input type="radio" id="PANTS4" name="category4" value="바지">
+        <label for="PANTS4">바지</label><br>
+
+        <input type="radio" id="SNEAKERS4" name="category4" value="스티커즈">
+        <label for="SNEAKERS4">스티커즈</label><br>
+
+        <input type="radio" id="BAG4" name="category4" value="가방">
+        <label for="BAG4">가방</label><br>
+
+        <input type="radio" id="HAT4" name="category4" value="모자">
+        <label for="HAT4">모자</label><br>
+
+        <input type="radio" id="SOCKS4" name="category4" value="양말">
+        <label for="SOCKS4">양말</label><br>
+
+        <input type="radio" id="ACCESSORY4" name="category4" value="엑세서리">
+        <label for="ACCESSORY4">엑세서리</label><br>
+    </fieldset>
+    <br>
+
+    <label for="price4">가격:</label>
+    <input type="text" id="price4" name="price4"><br><br>
+
+    <input type="submit" value="카테고리 추가" id="add-category">
 </form>
 <br>
 <h3>카테고리 수정</h3>
@@ -100,13 +139,113 @@
     <label for="price3">가격:</label>
     <input type="text" id="price3" name="price3"><br><br>
 
-    <input type="submit" value="modify-category" id="modify-category">
+    <input type="submit" value="카테고리 수정" id="modify-category">
+</form>
+<br>
+<h3>카테고리 삭제</h3>
+<form id="delete-category-form">
+    <label for="brand5">브랜드명:</label>
+    <input type="text" id="brand5" name="brand"><br><br>
+
+    <fieldset>
+        <legend>카테고리를 선택해주세요:</legend>
+        <input type="radio" id="TOPS5" name="category5" value="상의">
+        <label for="TOPS5">상의</label><br>
+
+        <input type="radio" id="OUTER5" name="category5" value="아우터">
+        <label for="OUTER5">아우터</label><br>
+
+        <input type="radio" id="PANTS5" name="category5" value="바지">
+        <label for="PANTS5">바지</label><br>
+
+        <input type="radio" id="SNEAKERS5" name="category5" value="스티커즈">
+        <label for="SNEAKERS5">스티커즈</label><br>
+
+        <input type="radio" id="BAG5" name="category5" value="가방">
+        <label for="BAG5">가방</label><br>
+
+        <input type="radio" id="HAT5" name="category5" value="모자">
+        <label for="HAT5">모자</label><br>
+
+        <input type="radio" id="SOCKS5" name="category5" value="양말">
+        <label for="SOCKS5">양말</label><br>
+
+        <input type="radio" id="ACCESSORY5" name="category5" value="엑세서리">
+        <label for="ACCESSORY5">엑세서리</label><br>
+    </fieldset>
+
+    <input type="submit" value="카테고리 삭제" id="delete-category">
 </form>
 <br>
 <a href="#" th:href="@{'/home'}">홈으로</a>
 
 <script>
     $(document).ready(function () {
+        $('#delete-category-form').on('submit', function (event) {
+            event.preventDefault();
+            console.log("delete-category");
+
+            var brand = $('#brand5').val();
+            var selectedOption = $('input[name="category5"]:checked').val();
+
+            // 입력된 데이터 콘솔에 출력
+            console.log('브랜드:', brand);
+            console.log('카테고리:', selectedOption);
+
+            var data = {
+                brandName: brand,
+                category: selectedOption,
+            };
+
+            $.ajax({
+                url: `/admin/category`,
+                method: 'DELETE',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    console.log(data);
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error("Error fetching data: ", error);
+                }
+            });
+        });
+
+        $('#add-category-form').on('submit', function (event) {
+            event.preventDefault();
+            console.log("add-category");
+
+            var brand = $('#brand4').val();
+            var selectedOption = $('input[name="category4"]:checked').val();
+            var price = $('#price4').val();
+
+            // 입력된 데이터 콘솔에 출력
+            console.log('브랜드:', brand);
+            console.log('카테고리:', selectedOption);
+            console.log('가격:', price);
+
+            var data = {
+                brandName: brand,
+                category: selectedOption,
+                price: price
+            };
+
+            $.ajax({
+                url: `/admin/category`,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (data) {
+                    console.log(data);
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error("Error fetching data: ", error);
+                }
+            });
+        });
+
         $('#modify-category-form').on('submit', function (event) {
             event.preventDefault();
             console.log("modify-category");
@@ -129,7 +268,6 @@
             $.ajax({
                 url: `/admin/category`,
                 method: 'PUT',
-                dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
                 success: function (data) {
@@ -138,7 +276,6 @@
                 },
                 error: function (error) {
                     console.error("Error fetching data: ", error);
-                    location.reload();
                 }
             });
         });
@@ -209,7 +346,6 @@
             $.ajax({
                 url: '/admin/brand',
                 method: 'POST',
-                dataType: 'json',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
                 success: function (data) {
@@ -218,7 +354,6 @@
                 },
                 error: function (error) {
                     console.error("Error fetching data: ", error);
-                    location.reload();
                 }
             });
         });
@@ -229,13 +364,11 @@
 
             var brand = $('#brand2').val();
 
-            // 입력된 데이터 콘솔에 출력
             console.log('브랜드:', brand);
 
             $.ajax({
                 url: `/admin/brand/${brand}`,
                 method: 'DELETE',
-                dataType: 'json',
                 contentType: 'application/json',
                 success: function (data) {
                     console.log(data);
@@ -243,7 +376,6 @@
                 },
                 error: function (error) {
                     console.error("Error fetching data: ", error);
-                    location.reload();
                 }
             });
         });
@@ -263,7 +395,8 @@
                     var row = $('<tr></tr>');
                     row.append('<td>' + keys[i] + '</td>');
                     for (let j in goods[keys[i]]) {
-                        row.append('<td>' + goods[keys[i]][j].price + '</td>');
+                        var price = goods[keys[i]][j].price === null ? "" : goods[keys[i]][j].price;
+                        row.append('<td>' + price + '</td>');
                     }
                     tableBody.append(row);
                 }

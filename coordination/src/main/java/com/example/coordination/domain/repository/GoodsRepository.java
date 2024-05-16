@@ -26,13 +26,14 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
                      SELECT category, brand_name, price,
                             ROW_NUMBER() OVER (PARTITION BY category ORDER BY price, BRAND_NAME desc) as rn
                      FROM goods
+                     WHERE price IS NOT NULL
                  ) subquery
             WHERE rn = 1
             """, nativeQuery = true)
     List<GetCategoriesMinPriceImpl> getCategoryMinPrices();
 
     @Query(value = """
-            SELECT brand_name AS brandName, sum(price) AS sumPrice
+            SELECT brand_name AS brandName, SUM(COALESCE(price, 0)) AS sumPrice
             FROM goods
             GROUP BY brand_name
             ORDER BY sumPrice
@@ -47,6 +48,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
                      SELECT category, brand_name, price,
                             ROW_NUMBER() OVER (PARTITION BY category ORDER BY price ASC) as rn
                      FROM goods
+                     WHERE price IS NOT NULL
                  ) subquery
             WHERE rn = 1 and CATEGORY = :category
             UNION
@@ -55,6 +57,7 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
                      SELECT category, brand_name, price,
                             ROW_NUMBER() OVER (PARTITION BY category ORDER BY price DESC) as rn
                      FROM goods
+                     WHERE price IS NOT NULL
                  ) subquery
             WHERE rn = 1 and CATEGORY = :category
                 """, nativeQuery = true)

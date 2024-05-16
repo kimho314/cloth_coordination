@@ -1,8 +1,6 @@
 package com.example.coordination.api.controller;
 
-import com.example.coordination.api.dto.AddCategoryRequestDto;
-import com.example.coordination.api.dto.BrandRequestDto;
-import com.example.coordination.api.dto.GetGoodsResponseDto;
+import com.example.coordination.api.dto.*;
 import com.example.coordination.api.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,7 @@ public class AdminController {
      */
     @GetMapping("/goods")
     public ResponseEntity<GetGoodsResponseDto> getGoods() {
-        GetGoodsResponseDto response = adminService.mappedToGoods();
+        GetGoodsResponseDto response = adminService.getGoods();
         return ResponseEntity.ok(response);
     }
 
@@ -32,7 +30,7 @@ public class AdminController {
     @PostMapping("/brand")
     public ResponseEntity<Void> addBrandName(@RequestBody BrandRequestDto request) {
         adminService.addBrandName(request);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -43,7 +41,18 @@ public class AdminController {
     @DeleteMapping("/brand/{brandName}")
     public ResponseEntity<Void> deleteBrandName(@PathVariable String brandName) {
         adminService.deleteBrandName(brandName);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * @param request
+     * @return
+     * @title 카테고리 추가 API
+     */
+    @PostMapping("/category")
+    public ResponseEntity<Void> addCategory(@RequestBody AddCategoryRequestDto request) {
+        adminService.addCategory(request);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -52,9 +61,20 @@ public class AdminController {
      * @title 카테고리 가격 수정 APi
      */
     @PutMapping("/category")
-    public ResponseEntity<Void> modifyCategory(@RequestBody AddCategoryRequestDto request) {
-        adminService.addCategory(request);
-        return ResponseEntity.ok(null);
+    public ResponseEntity<Void> modifyCategory(@RequestBody ModifyCategoryRequestDto request) {
+        adminService.modifyCategory(request);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * @param request
+     * @return
+     * @title 카테고리 삭제 API
+     */
+    @DeleteMapping("/category")
+    public ResponseEntity<Void> deleteCategory(@RequestBody DeleteCategoryRequestDto request) {
+        adminService.deleteCategory(request);
+        return ResponseEntity.ok().build();
     }
 
 }

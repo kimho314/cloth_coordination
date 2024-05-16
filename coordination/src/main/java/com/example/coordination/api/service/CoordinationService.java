@@ -1,6 +1,7 @@
 package com.example.coordination.api.service;
 
 import com.example.coordination.api.dto.*;
+import com.example.coordination.common.exception.NoBrandPriceException;
 import com.example.coordination.domain.dto.GetBrandSumImpl;
 import com.example.coordination.domain.dto.GetCategoriesMinPriceImpl;
 import com.example.coordination.domain.dto.GetCategoryMinMaxPriceImpl;
@@ -84,20 +85,14 @@ public class CoordinationService {
     private static BrandPriceDto getMaxBrandPriceDto(List<GetCategoryMinMaxPriceImpl> categoryMinMaxPrices) {
         GetCategoryMinMaxPriceImpl maxPrice = categoryMinMaxPrices.stream()
                 .max(Comparator.comparing(GetCategoryMinMaxPriceImpl::getPrice))
-                .orElse(null);
-        if (maxPrice == null) {
-            return null;
-        }
+                .orElseThrow(NoBrandPriceException::new);
         return getBrandPriceDto(maxPrice);
     }
 
     private static BrandPriceDto getMinBrandPriceDto(List<GetCategoryMinMaxPriceImpl> categoryMinMaxPrices) {
         GetCategoryMinMaxPriceImpl maxPrice = categoryMinMaxPrices.stream()
                 .min(Comparator.comparing(GetCategoryMinMaxPriceImpl::getPrice))
-                .orElse(null);
-        if (maxPrice == null) {
-            return null;
-        }
+                .orElseThrow(NoBrandPriceException::new);
         return getBrandPriceDto(maxPrice);
     }
 

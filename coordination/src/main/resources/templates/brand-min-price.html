@@ -45,8 +45,9 @@
                 tableBody.empty();  // 기존 데이터를 지우고 새 데이터를 추가
                 categories.forEach(function (item) {
                     var row = $('<tr></tr>');
+                    var price = item['price'] === null ? 0 : parseInt(item['price']);
                     row.append('<td>' + item['category'] + '</td>');
-                    row.append('<td>' + parseInt(item['price']).toLocaleString() + '</td>');
+                    row.append('<td>' + price.toLocaleString() + '</td>');
                     tableBody.append(row);
                 });
                 $('#total-price').text(parseInt(totalPrice).toLocaleString());

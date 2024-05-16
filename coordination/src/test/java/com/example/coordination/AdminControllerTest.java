@@ -1,8 +1,6 @@
 package com.example.coordination;
 
-import com.example.coordination.api.dto.AddCategoryRequestDto;
-import com.example.coordination.api.dto.BrandRequestDto;
-import com.example.coordination.api.dto.CategoryPriceDto;
+import com.example.coordination.api.dto.*;
 import com.example.coordination.domain.entity.Goods;
 import com.example.coordination.domain.enums.Category;
 import com.example.coordination.domain.repository.GoodsRepository;
@@ -128,9 +126,57 @@ public class AdminControllerTest {
         final String testBrandName = "A";
         final Category testCategory = Category.TOPS;
         final Integer testPrice = 300_000_000;
-        AddCategoryRequestDto request = new AddCategoryRequestDto(testBrandName, testCategory, testPrice);
+        ModifyCategoryRequestDto request = new ModifyCategoryRequestDto(testBrandName, testCategory, testPrice);
 
         ResultActions perform = mvc.perform(put("/admin/category")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+        );
+
+        perform.andExpect(status().isOk())
+                .andReturn();
+
+        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, Category.TOPS).orElseThrow();
+        Assertions.assertEquals(testPrice, goods.getPrice());
+    }
+
+    @Test
+    @DisplayName("카테고리 가격 삭제 테스트")
+    @Transactional
+    void deleteCategoryTest() throws Exception {
+        final String testBrandName = "A";
+        final Category testCategory = Category.TOPS;
+        DeleteCategoryRequestDto request = new DeleteCategoryRequestDto(testBrandName, testCategory);
+
+        ResultActions perform = mvc.perform(delete("/admin/category")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+        );
+
+        perform.andExpect(status().isOk())
+                .andReturn();
+
+        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, Category.TOPS).orElseThrow();
+        Assertions.assertNull(goods.getPrice());
+    }
+
+    @Test
+    @DisplayName("카테고리 추가 테스트")
+    @Transactional
+    void addCategoryTest() throws Exception {
+        final String testBrandName = "A";
+        final Category testCategory = Category.TOPS;
+        final Integer testPrice = 300_000_000;
+        AddCategoryRequestDto request = new AddCategoryRequestDto(testBrandName, testCategory, testPrice);
+
+        Goods goods1 = goodsRepository.findByBrandNameAndCategory(testBrandName, testCategory).orElseThrow();
+        goods1.setPrice(null);
+        goodsRepository.saveAndFlush(goods1);
+
+
+        ResultActions perform = mvc.perform(post("/admin/category")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))

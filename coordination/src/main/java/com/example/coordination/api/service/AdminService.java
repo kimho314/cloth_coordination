@@ -1,9 +1,7 @@
 package com.example.coordination.api.service;
 
-import com.example.coordination.api.dto.AddCategoryRequestDto;
-import com.example.coordination.api.dto.BrandRequestDto;
-import com.example.coordination.api.dto.GetGoodsResponseDto;
-import com.example.coordination.api.dto.GoodsDto;
+import com.example.coordination.api.dto.*;
+import com.example.coordination.common.exception.CategoryFoundException;
 import com.example.coordination.domain.entity.Goods;
 import com.example.coordination.domain.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,7 +46,7 @@ public class AdminService {
     }
 
     @Transactional
-    public void addCategory(AddCategoryRequestDto request) {
+    public void modifyCategory(ModifyCategoryRequestDto request) {
         Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.category())
                 .orElseThrow(() -> new NoSuchElementException(request.brandName()));
 
@@ -55,14 +54,14 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    public GetGoodsResponseDto mappedToGoods() {
+    public GetGoodsResponseDto getGoods() {
         List<Goods> goods = goodsRepository.findAll();
-        Map<String, List<GoodsDto>> goodsMap = amppedToGoodsMap(goods);
+        Map<String, List<GoodsDto>> goodsMap = mappedToGoodsMap(goods);
 
         return new GetGoodsResponseDto(goodsMap);
     }
 
-    private static Map<String, List<GoodsDto>> amppedToGoodsMap(List<Goods> goods) {
+    private static Map<String, List<GoodsDto>> mappedToGoodsMap(List<Goods> goods) {
         return goods.stream()
                 .map(it -> GoodsDto.builder()
                         .brandName(it.getBrandName())
@@ -75,5 +74,25 @@ public class AdminService {
     @Transactional
     public void deleteBrandName(String brandName) {
         goodsRepository.deleteAllByBrandName(brandName);
+    }
+
+    @Transactional
+    public void deleteCategory(DeleteCategoryRequestDto request) {
+        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.category())
+                .orElseThrow(() -> new NoSuchElementException(request.brandName() + " " + request.category()));
+
+        goods.setPrice(null);
+    }
+
+    @Transactional
+    public void addCategory(AddCategoryRequestDto request) {
+        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.category())
+                .orElseThrow(NoSuchElementException::new);
+        if (!Objects.isNull(goods.getPrice())) {
+            throw new CategoryFoundException(request.category().getValue());
+        }
+
+        goods.setPrice(request.price());
+        goodsRepository.save(goods);
     }
 }
