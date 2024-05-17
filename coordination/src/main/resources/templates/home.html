@@ -21,12 +21,8 @@
 <div th:if="${#authorization.expression('isAuthenticated()')}">
     <p>Hello, <span th:text="${#authentication.name}"></span>!</p>
     <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Logout"/>
+        <input type="submit" value="로그아웃"/>
     </form>
-</div>
-
-<div class="content">
-    <div class="header">Welcome to Our Home Page</div>
 </div>
 </body>
 </html>
