@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomerController {
     /**
-     * @return
      * @title 로그인 페이지
      */
     @GetMapping("/login")
@@ -24,9 +23,6 @@ public class HomerController {
     }
 
     /**
-     * @param request
-     * @param response
-     * @return
      * @title 로그아웃 페이지
      */
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
@@ -39,7 +35,6 @@ public class HomerController {
     }
 
     /**
-     * @return
      * @title 홈 페이지
      */
     @RequestMapping(value = {"/home", "/"}, method = {RequestMethod.POST, RequestMethod.GET})
@@ -48,7 +43,6 @@ public class HomerController {
     }
 
     /**
-     * @return
      * @title 카테고리 페이지
      */
     @GetMapping("/categories")
@@ -57,7 +51,6 @@ public class HomerController {
     }
 
     /**
-     * @return
      * @title 최소가격 브랜드 페이지
      */
     @GetMapping("/brand-min-price")
@@ -66,7 +59,6 @@ public class HomerController {
     }
 
     /**
-     * @return
      * @title 카테고리 별 퇴소,퇴고 가격
      */
     @GetMapping("/category-min-max-price")
@@ -75,7 +67,6 @@ public class HomerController {
     }
 
     /**
-     * @return
      * @title 어드민 페이지
      */
     @GetMapping("/admin")

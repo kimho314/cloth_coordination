@@ -51,6 +51,7 @@ public class AdminService {
                 .orElseThrow(() -> new NoSuchElementException(request.brandName()));
 
         goods.setPrice(request.price());
+        goodsRepository.save(goods);
     }
 
     @Transactional(readOnly = true)
