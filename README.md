@@ -99,3 +99,18 @@ PW : 1234
 ```
 
 -   AdminCOntrollerTest.java, CoordinationControllerTest.java에 있는 단위 테스트로 해당 기능들을 테스트 할 수 있습니다
+
+# ERD
+
+```mermaid
+erDiagram
+    GOODS {
+        BIGINT ID
+        VARCHAR(1000) brand_name
+        VARCHAR(255) CATEGORY
+        INTEGER PRICE
+        TIMESTAMP CREATED_AT
+        TIMESTAMP UPDATED_AT
+        INTEGER VERSION
+    }
+```
