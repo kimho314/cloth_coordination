@@ -3,6 +3,7 @@ package com.example.coordination;
 import com.example.coordination.api.dto.BrandMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoriesMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoryMinMaxPriceResponseDto;
+import com.example.coordination.common.util.ObjectMapperFactory;
 import com.example.coordination.domain.enums.Category;
 import com.example.coordination.domain.repository.GoodsRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -28,11 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class CoordinationControllerTest {
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.getInstance();
+
     @Autowired
     MockMvc mvc;
     @Autowired
     GoodsRepository goodsRepository;
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("카테고리 최저 가격 조회 테스트")
@@ -47,7 +49,7 @@ public class CoordinationControllerTest {
         MvcResult mvcResult = perform.andExpect(status().isOk())
                 .andReturn();
 
-        GetCategoriesMinPriceResponseDto result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+        GetCategoriesMinPriceResponseDto result = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
                 new TypeReference<GetCategoriesMinPriceResponseDto>() {
                 });
         Assertions.assertEquals(34_100, result.totalPrice());
@@ -66,7 +68,7 @@ public class CoordinationControllerTest {
         MvcResult mvcResult = perform.andExpect(status().isOk())
                 .andReturn();
 
-        BrandMinPriceResponseDto result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+        BrandMinPriceResponseDto result = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });
         Assertions.assertEquals("D", result.brandName());
@@ -89,7 +91,7 @@ public class CoordinationControllerTest {
         MvcResult mvcResult = perform.andExpect(status().isOk())
                 .andReturn();
 
-        GetCategoryMinMaxPriceResponseDto result = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+        GetCategoryMinMaxPriceResponseDto result = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });
         Assertions.assertEquals("상의", result.category().getValue());

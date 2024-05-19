@@ -1,6 +1,7 @@
 package com.example.coordination;
 
 import com.example.coordination.api.dto.*;
+import com.example.coordination.common.util.ObjectMapperFactory;
 import com.example.coordination.domain.entity.Goods;
 import com.example.coordination.domain.enums.Category;
 import com.example.coordination.domain.repository.GoodsRepository;
@@ -27,11 +28,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class AdminControllerTest {
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperFactory.getInstance();
+
     @Autowired
     MockMvc mvc;
     @Autowired
     GoodsRepository goodsRepository;
-    private ObjectMapper objectMapper = new ObjectMapper();
+
 
 
     @Test
@@ -82,7 +85,7 @@ public class AdminControllerTest {
         ResultActions perform = mvc.perform(post("/admin/brand")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .content(OBJECT_MAPPER.writeValueAsString(request))
         );
 
         perform.andExpect(status().isOk())
@@ -131,7 +134,7 @@ public class AdminControllerTest {
         ResultActions perform = mvc.perform(put("/admin/category")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .content(OBJECT_MAPPER.writeValueAsString(request))
         );
 
         perform.andExpect(status().isOk())
@@ -152,7 +155,7 @@ public class AdminControllerTest {
         ResultActions perform = mvc.perform(delete("/admin/category")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .content(OBJECT_MAPPER.writeValueAsString(request))
         );
 
         perform.andExpect(status().isOk())
@@ -179,7 +182,7 @@ public class AdminControllerTest {
         ResultActions perform = mvc.perform(post("/admin/category")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
+                .content(OBJECT_MAPPER.writeValueAsString(request))
         );
 
         perform.andExpect(status().isOk())
