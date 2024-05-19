@@ -44,7 +44,7 @@ public class AdminController {
     }
 
     /**
-     * @title 카테고리 추가 API
+     * @title 카테고리 가격 추가 API
      */
     @PostMapping("/category")
     public ResponseEntity<Void> addCategory(@RequestBody @Valid AddCategoryRequestDto request) {
@@ -62,7 +62,7 @@ public class AdminController {
     }
 
     /**
-     * @title 카테고리 삭제 API
+     * @title 카테고리 가격 삭제 API
      */
     @DeleteMapping("/category")
     public ResponseEntity<Void> deleteCategory(@RequestBody @Valid DeleteCategoryRequestDto request) {

@@ -1,7 +1,9 @@
 package com.example.coordination.common.exception;
 
-public class NoBrandPriceException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class NoBrandPriceException extends ServiceException {
     public NoBrandPriceException() {
-        super("No brand price");
+        super(HttpStatus.NOT_FOUND.value(), "No brand price");
     }
 }
