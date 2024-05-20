@@ -1,9 +1,7 @@
 package com.example.coordination.common.exception;
 
-import org.springframework.http.HttpStatus;
-
-public class CategoryFoundException extends ServiceException {
+public class CategoryFoundException extends RuntimeException {
     public CategoryFoundException(String name) {
-        super(HttpStatus.BAD_REQUEST.value(), name + " found");
+        super(name + " found");
     }
 }
