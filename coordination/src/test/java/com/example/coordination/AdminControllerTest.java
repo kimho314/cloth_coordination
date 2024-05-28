@@ -3,7 +3,7 @@ package com.example.coordination;
 import com.example.coordination.api.dto.*;
 import com.example.coordination.common.util.ObjectMapperFactory;
 import com.example.coordination.domain.entity.Goods;
-import com.example.coordination.domain.enums.Category;
+import com.example.coordination.domain.enums.CategoryType;
 import com.example.coordination.domain.repository.GoodsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +36,6 @@ public class AdminControllerTest {
     GoodsRepository goodsRepository;
 
 
-
     @Test
     @DisplayName("상품 목록 조회 테스트")
     void getGoodsTest() throws Exception {
@@ -59,26 +58,26 @@ public class AdminControllerTest {
         final String testBrandName = "AA";
 
         CategoryPriceDto priceDto1 = CategoryPriceDto.builder()
-                .category(Category.TOPS)
+                .categoryType(CategoryType.TOPS)
                 .build();
         CategoryPriceDto priceDto2 = CategoryPriceDto.builder()
-                .category(Category.OUTER)
+                .categoryType(CategoryType.OUTER)
                 .price(10_000)
                 .build();
         CategoryPriceDto priceDto3 = CategoryPriceDto.builder()
-                .category(Category.SNEAKERS)
+                .categoryType(CategoryType.SNEAKERS)
                 .build();
         CategoryPriceDto priceDto4 = CategoryPriceDto.builder()
-                .category(Category.BAG)
+                .categoryType(CategoryType.BAG)
                 .build();
         CategoryPriceDto priceDto5 = CategoryPriceDto.builder()
-                .category(Category.HAT)
+                .categoryType(CategoryType.HAT)
                 .build();
         CategoryPriceDto priceDto6 = CategoryPriceDto.builder()
-                .category(Category.SOCKS)
+                .categoryType(CategoryType.SOCKS)
                 .build();
         CategoryPriceDto priceDto7 = CategoryPriceDto.builder()
-                .category(Category.ACCESSORY)
+                .categoryType(CategoryType.ACCESSORY)
                 .build();
         BrandRequestDto request = new BrandRequestDto(testBrandName, List.of(priceDto1, priceDto2, priceDto3, priceDto4, priceDto5, priceDto6, priceDto7));
 
@@ -94,7 +93,7 @@ public class AdminControllerTest {
         List<Goods> goods = goodsRepository.findAllByBrandName(testBrandName);
         Assertions.assertFalse(goods.isEmpty());
         goods.forEach(it -> {
-            if (it.getCategory().equals(Category.OUTER)) {
+            if (it.getCategoryType().equals(CategoryType.OUTER)) {
                 Assertions.assertEquals(10_000, it.getPrice());
             }
             else {
@@ -127,9 +126,9 @@ public class AdminControllerTest {
     @Transactional
     void modifyCategoryTest() throws Exception {
         final String testBrandName = "A";
-        final Category testCategory = Category.TOPS;
+        final CategoryType testCategoryType = CategoryType.TOPS;
         final Integer testPrice = 300_000_000;
-        ModifyCategoryRequestDto request = new ModifyCategoryRequestDto(testBrandName, testCategory, testPrice);
+        ModifyCategoryRequestDto request = new ModifyCategoryRequestDto(testBrandName, testCategoryType, testPrice);
 
         ResultActions perform = mvc.perform(put("/admin/category")
                 .characterEncoding(StandardCharsets.UTF_8)
@@ -140,7 +139,7 @@ public class AdminControllerTest {
         perform.andExpect(status().isOk())
                 .andReturn();
 
-        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, Category.TOPS).orElseThrow();
+        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, CategoryType.TOPS).orElseThrow();
         Assertions.assertEquals(testPrice, goods.getPrice());
     }
 
@@ -149,8 +148,8 @@ public class AdminControllerTest {
     @Transactional
     void deleteCategoryTest() throws Exception {
         final String testBrandName = "A";
-        final Category testCategory = Category.TOPS;
-        DeleteCategoryRequestDto request = new DeleteCategoryRequestDto(testBrandName, testCategory);
+        final CategoryType testCategoryType = CategoryType.TOPS;
+        DeleteCategoryRequestDto request = new DeleteCategoryRequestDto(testBrandName, testCategoryType);
 
         ResultActions perform = mvc.perform(delete("/admin/category")
                 .characterEncoding(StandardCharsets.UTF_8)
@@ -161,7 +160,7 @@ public class AdminControllerTest {
         perform.andExpect(status().isOk())
                 .andReturn();
 
-        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, Category.TOPS).orElseThrow();
+        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, CategoryType.TOPS).orElseThrow();
         Assertions.assertNull(goods.getPrice());
     }
 
@@ -170,11 +169,11 @@ public class AdminControllerTest {
     @Transactional
     void addCategoryTest() throws Exception {
         final String testBrandName = "A";
-        final Category testCategory = Category.TOPS;
+        final CategoryType testCategoryType = CategoryType.TOPS;
         final Integer testPrice = 300_000_000;
-        AddCategoryRequestDto request = new AddCategoryRequestDto(testBrandName, testCategory, testPrice);
+        AddCategoryRequestDto request = new AddCategoryRequestDto(testBrandName, testCategoryType, testPrice);
 
-        Goods goods1 = goodsRepository.findByBrandNameAndCategory(testBrandName, testCategory).orElseThrow();
+        Goods goods1 = goodsRepository.findByBrandNameAndCategory(testBrandName, testCategoryType).orElseThrow();
         goods1.setPrice(null);
         goodsRepository.saveAndFlush(goods1);
 
@@ -188,7 +187,7 @@ public class AdminControllerTest {
         perform.andExpect(status().isOk())
                 .andReturn();
 
-        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, Category.TOPS).orElseThrow();
+        Goods goods = goodsRepository.findByBrandNameAndCategory(testBrandName, CategoryType.TOPS).orElseThrow();
         Assertions.assertEquals(testPrice, goods.getPrice());
     }
 }

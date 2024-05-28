@@ -9,28 +9,28 @@
 <form id="radio-form">
     <fieldset>
         <legend>카테고리를 선택해주세요:</legend>
-        <input type="radio" id="TOPS" name="category" value="상의">
+        <input type="radio" id="TOPS" name="categoryType" value="상의">
         <label for="TOPS">상의</label><br>
 
-        <input type="radio" id="OUTER" name="category" value="아우터">
+        <input type="radio" id="OUTER" name="categoryType" value="아우터">
         <label for="OUTER">아우터</label><br>
 
-        <input type="radio" id="PANTS" name="category" value="바지">
+        <input type="radio" id="PANTS" name="categoryType" value="바지">
         <label for="PANTS">바지</label><br>
 
-        <input type="radio" id="SNEAKERS" name="category" value="스티커즈">
+        <input type="radio" id="SNEAKERS" name="categoryType" value="스티커즈">
         <label for="SNEAKERS">스티커즈</label><br>
 
-        <input type="radio" id="BAG" name="category" value="가방">
+        <input type="radio" id="BAG" name="categoryType" value="가방">
         <label for="BAG">가방</label><br>
 
-        <input type="radio" id="HAT" name="category" value="모자">
+        <input type="radio" id="HAT" name="categoryType" value="모자">
         <label for="HAT">모자</label><br>
 
-        <input type="radio" id="SOCKS" name="category" value="양말">
+        <input type="radio" id="SOCKS" name="categoryType" value="양말">
         <label for="SOCKS">양말</label><br>
 
-        <input type="radio" id="ACCESSORY" name="category" value="엑세서리">
+        <input type="radio" id="ACCESSORY" name="categoryType" value="엑세서리">
         <label for="ACCESSORY">엑세서리</label><br>
     </fieldset>
     <input type="submit" value="조회">
@@ -68,18 +68,18 @@
         $('#radio-form').on('submit', function (event) {
             event.preventDefault();
 
-            var selectedOption = $('input[name="category"]:checked').val();
+            var selectedOption = $('input[name="categoryType"]:checked').val();
 
             console.log('Selected option:', selectedOption);
 
 
             $.ajax({
-                url: `/client/category/${selectedOption}/min-max-price`,
+                url: `/client/categoryType/${selectedOption}/min-max-price`,
                 method: 'GET',
                 success: function (response) {
                     console.log('Server response:', response);
 
-                    var category = response.category;
+                    var categoryType = response.categoryType;
                     var min = response.minPrice;
                     var max = response.maxPrice;
 

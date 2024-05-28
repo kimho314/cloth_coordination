@@ -8,24 +8,21 @@ import lombok.*;
 @Setter
 @Builder
 @Entity
-@Table(name = "GOODS")
+@Table(name = "CATEGORY")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Goods extends BaseEntity {
+public class Category extends BaseEntity2 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "BRAND_NAME", length = 1000)
-    private String brandName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "CATEGORY")
-    private CategoryType categoryType;
-
-    @Column(name = "PRICE")
     private Integer price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 100, name = "CATEGORY_TYPE")
+    private CategoryType categoryType;
 
+    @JoinColumn(name = "brand_id", referencedColumnName = "BRAND_ID")
+    @ManyToOne
+    private Brand brand;
 }

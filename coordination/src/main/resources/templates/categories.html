@@ -40,7 +40,7 @@
 
                     data.categoryMinPriceDtos.forEach(function (product) {
                         var row = $('<tr></tr>');
-                        row.append('<td>' + product.category + '</td>');
+                        row.append('<td>' + product.categoryType + '</td>');
                         row.append('<td>' + product.brandName + '</td>');
                         row.append('<td>' + product.price.toLocaleString() + '</td>');
                         tableBody.append(row);

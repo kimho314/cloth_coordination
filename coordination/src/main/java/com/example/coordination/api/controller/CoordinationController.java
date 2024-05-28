@@ -4,7 +4,7 @@ import com.example.coordination.api.dto.BrandMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoriesMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoryMinMaxPriceResponseDto;
 import com.example.coordination.api.service.CoordinationService;
-import com.example.coordination.domain.enums.Category;
+import com.example.coordination.domain.enums.CategoryType;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +45,7 @@ public class CoordinationController {
      */
     @GetMapping("/category/{category}/min-max-price")
     public ResponseEntity<GetCategoryMinMaxPriceResponseDto> getCategoryMinMaxPrice(@PathVariable @NotNull String category) {
-        GetCategoryMinMaxPriceResponseDto response = coordinationService.getCategoryMinMaxPrice(Category.findByValue(category).name());
+        GetCategoryMinMaxPriceResponseDto response = coordinationService.getCategoryMinMaxPrice(CategoryType.findByValue(category).name());
         return ResponseEntity.ok(response);
     }
 

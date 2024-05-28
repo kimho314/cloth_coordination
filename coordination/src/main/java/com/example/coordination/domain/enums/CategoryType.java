@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.Arrays;
 
-public enum Category {
+public enum CategoryType {
     TOPS("상의"),
     OUTER("아우터"),
     PANTS("바지"),
@@ -19,7 +19,7 @@ public enum Category {
     private String value;
 
     @JsonCreator
-    Category(String name) {
+    CategoryType(String name) {
         this.value = name;
     }
 
@@ -28,14 +28,14 @@ public enum Category {
         return value;
     }
 
-    public static Category findByName(String name) {
+    public static CategoryType findByName(String name) {
         return Arrays.stream(values())
                 .filter(it -> it.name().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException());
     }
 
-    public static Category findByValue(String value) {
+    public static CategoryType findByValue(String value) {
         return Arrays.stream(values())
                 .filter(it -> it.getValue().equals(value))
                 .findFirst()

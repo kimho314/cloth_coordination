@@ -4,7 +4,7 @@ import com.example.coordination.api.dto.BrandMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoriesMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoryMinMaxPriceResponseDto;
 import com.example.coordination.common.util.ObjectMapperFactory;
-import com.example.coordination.domain.enums.Category;
+import com.example.coordination.domain.enums.CategoryType;
 import com.example.coordination.domain.repository.GoodsRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,7 +79,7 @@ public class CoordinationControllerTest {
     @Test
     @DisplayName("카테고리 최고,최저 가격 조회 테스트")
     void getCategoryMinMaxPriceTest() throws Exception {
-        final String testCategory = Category.TOPS.getValue();
+        final String testCategory = CategoryType.TOPS.getValue();
 
 
         ResultActions perform = mvc.perform(get("/client/category/{category}/min-max-price", testCategory)
@@ -94,7 +94,7 @@ public class CoordinationControllerTest {
         GetCategoryMinMaxPriceResponseDto result = OBJECT_MAPPER.readValue(mvcResult.getResponse().getContentAsString(),
                 new TypeReference<>() {
                 });
-        Assertions.assertEquals("상의", result.category().getValue());
+        Assertions.assertEquals("상의", result.categoryType().getValue());
         Assertions.assertEquals(10_000, result.minPrice().price());
         Assertions.assertEquals("C", result.minPrice().brandName());
         Assertions.assertEquals("I", result.maxPrice().brandName());

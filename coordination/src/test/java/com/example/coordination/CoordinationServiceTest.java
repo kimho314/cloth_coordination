@@ -4,9 +4,7 @@ import com.example.coordination.api.dto.BrandMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoriesMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoryMinMaxPriceResponseDto;
 import com.example.coordination.api.service.CoordinationService;
-import com.example.coordination.common.util.ObjectMapperFactory;
-import com.example.coordination.domain.enums.Category;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.coordination.domain.enums.CategoryType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,11 +38,11 @@ public class CoordinationServiceTest {
 
     @Test
     void getCategoryMinMaxPriceTest() {
-        final String category = Category.TOPS.name();
+        final String category = CategoryType.TOPS.name();
         GetCategoryMinMaxPriceResponseDto categoryMinMaxPrice = coordinationService.getCategoryMinMaxPrice(category);
         log.info(categoryMinMaxPrice.toString());
 
-        Assertions.assertEquals("상의", categoryMinMaxPrice.category().getValue());
+        Assertions.assertEquals("상의", categoryMinMaxPrice.categoryType().getValue());
         Assertions.assertEquals(10_000, categoryMinMaxPrice.minPrice().price());
         Assertions.assertEquals("C", categoryMinMaxPrice.minPrice().brandName());
         Assertions.assertEquals("I", categoryMinMaxPrice.maxPrice().brandName());

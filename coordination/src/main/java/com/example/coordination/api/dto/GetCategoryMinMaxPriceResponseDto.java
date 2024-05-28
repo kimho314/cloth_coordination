@@ -1,11 +1,11 @@
 package com.example.coordination.api.dto;
 
-import com.example.coordination.domain.enums.Category;
+import com.example.coordination.domain.enums.CategoryType;
 import lombok.Builder;
 
 @Builder
 public record GetCategoryMinMaxPriceResponseDto(
-        Category category,
+        CategoryType categoryType,
         BrandPriceDto minPrice,
         BrandPriceDto maxPrice
 ) {
@@ -13,7 +13,7 @@ public record GetCategoryMinMaxPriceResponseDto(
     @Override
     public String toString() {
         return "GetCategoryMinMaxPriceResponseDto{" +
-                "category=" + category +
+                "category=" + categoryType +
                 ", minPrice=" + minPrice +
                 ", maxPrice=" + maxPrice +
                 '}';

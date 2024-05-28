@@ -46,7 +46,7 @@
                 categories.forEach(function (item) {
                     var row = $('<tr></tr>');
                     var price = item['price'] === null ? 0 : parseInt(item['price']);
-                    row.append('<td>' + item['category'] + '</td>');
+                    row.append('<td>' + item['categoryType'] + '</td>');
                     row.append('<td>' + price.toLocaleString() + '</td>');
                     tableBody.append(row);
                 });

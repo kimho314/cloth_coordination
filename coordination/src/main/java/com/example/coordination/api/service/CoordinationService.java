@@ -6,7 +6,7 @@ import com.example.coordination.domain.dto.GetBrandSumImpl;
 import com.example.coordination.domain.dto.GetCategoriesMinPriceImpl;
 import com.example.coordination.domain.dto.GetCategoryMinMaxPriceImpl;
 import com.example.coordination.domain.entity.Goods;
-import com.example.coordination.domain.enums.Category;
+import com.example.coordination.domain.enums.CategoryType;
 import com.example.coordination.domain.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class CoordinationService {
         return categoryMinPrices.stream()
                 .map(it -> CategoryMinPriceDto.builder()
                         .brandName(it.getBrandName())
-                        .category(Category.findByName(it.getCategory()).getValue())
+                        .category(CategoryType.findByName(it.getCategory()).getValue())
                         .price(it.getPrice())
                         .build())
                 .collect(Collectors.toList());
@@ -65,7 +65,7 @@ public class CoordinationService {
     private static List<CategoryPriceDto> mappedToCategoryPriceDtos(List<Goods> goods) {
         return goods.stream()
                 .map(it -> CategoryPriceDto.builder()
-                        .category(it.getCategory())
+                        .categoryType(it.getCategoryType())
                         .price(it.getPrice())
                         .build())
                 .toList();
@@ -79,7 +79,7 @@ public class CoordinationService {
             return null;
         }
 
-        return new GetCategoryMinMaxPriceResponseDto(Category.findByName(category), getMinBrandPriceDto(categoryMinMaxPrices), getMaxBrandPriceDto(categoryMinMaxPrices));
+        return new GetCategoryMinMaxPriceResponseDto(CategoryType.findByName(category), getMinBrandPriceDto(categoryMinMaxPrices), getMaxBrandPriceDto(categoryMinMaxPrices));
     }
 
     private static BrandPriceDto getMaxBrandPriceDto(List<GetCategoryMinMaxPriceImpl> categoryMinMaxPrices) {

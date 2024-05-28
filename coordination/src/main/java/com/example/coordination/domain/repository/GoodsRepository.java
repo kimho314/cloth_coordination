@@ -4,7 +4,7 @@ import com.example.coordination.domain.dto.GetBrandSumImpl;
 import com.example.coordination.domain.dto.GetCategoriesMinPriceImpl;
 import com.example.coordination.domain.dto.GetCategoryMinMaxPriceImpl;
 import com.example.coordination.domain.entity.Goods;
-import com.example.coordination.domain.enums.Category;
+import com.example.coordination.domain.enums.CategoryType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,15 +16,15 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 
     void deleteAllByBrandName(String brandName);
 
-    Optional<Goods> findByBrandNameAndCategory(String brandName, Category category);
+    Optional<Goods> findByBrandNameAndCategory(String brandName, CategoryType categoryType);
 
     @Query(value = """
-            SELECT category AS category,
+            SELECT categoryType AS categoryType,
                    brand_name AS brandName,
                    price AS price
             FROM (
-                     SELECT category, brand_name, price,
-                            ROW_NUMBER() OVER (PARTITION BY category ORDER BY price, BRAND_NAME desc) as rn
+                     SELECT categoryType, brand_name, price,
+                            ROW_NUMBER() OVER (PARTITION BY categoryType ORDER BY price, BRAND_NAME desc) as rn
                      FROM goods
                      WHERE price IS NOT NULL
                  ) subquery
@@ -43,25 +43,25 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
     Optional<GetBrandSumImpl> getBrandSums();
 
     @Query(value = """
-            SELECT category AS catogry, brand_name AS brandName, price AS price
+            SELECT categoryType AS catogry, brand_name AS brandName, price AS price
             FROM (
-                     SELECT category, brand_name, price,
-                            ROW_NUMBER() OVER (PARTITION BY category ORDER BY price ASC) as rn
+                     SELECT categoryType, brand_name, price,
+                            ROW_NUMBER() OVER (PARTITION BY categoryType ORDER BY price ASC) as rn
                      FROM goods
                      WHERE price IS NOT NULL
                  ) subquery
-            WHERE rn = 1 and CATEGORY = :category
+            WHERE rn = 1 and CATEGORY = :categoryType
             UNION
-            SELECT category AS catogry, brand_name AS brandName, price AS price
+            SELECT categoryType AS catogry, brand_name AS brandName, price AS price
             FROM (
-                     SELECT category, brand_name, price,
-                            ROW_NUMBER() OVER (PARTITION BY category ORDER BY price DESC) as rn
+                     SELECT categoryType, brand_name, price,
+                            ROW_NUMBER() OVER (PARTITION BY categoryType ORDER BY price DESC) as rn
                      FROM goods
                      WHERE price IS NOT NULL
                  ) subquery
-            WHERE rn = 1 and CATEGORY = :category
+            WHERE rn = 1 and CATEGORY = :categoryType
                 """, nativeQuery = true)
-    List<GetCategoryMinMaxPriceImpl> getCategoryMinMaxPrices(@Param("category") String category);
+    List<GetCategoryMinMaxPriceImpl> getCategoryMinMaxPrices(@Param("categoryType") String categoryType);
 
     List<Goods> findAllByBrandName(String brandName);
 }

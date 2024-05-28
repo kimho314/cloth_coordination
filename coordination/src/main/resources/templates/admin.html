@@ -65,7 +65,7 @@
 </form>
 <br>
 <h3>카테고리 추가</h3>
-<form id="add-category-form">
+<form id="add-categoryType-form">
     <label for="brand3">브랜드명:</label>
     <input type="text" id="brand4" name="brand"><br><br>
 
@@ -100,11 +100,11 @@
     <label for="price4">가격:</label>
     <input type="text" id="price4" name="price4"><br><br>
 
-    <input type="submit" value="카테고리 추가" id="add-category">
+    <input type="submit" value="카테고리 추가" id="add-categoryType">
 </form>
 <br>
 <h3>카테고리 수정</h3>
-<form id="modify-category-form">
+<form id="modify-categoryType-form">
     <label for="brand3">브랜드명:</label>
     <input type="text" id="brand3" name="brand"><br><br>
 
@@ -139,11 +139,11 @@
     <label for="price3">가격:</label>
     <input type="text" id="price3" name="price3"><br><br>
 
-    <input type="submit" value="카테고리 수정" id="modify-category">
+    <input type="submit" value="카테고리 수정" id="modify-categoryType">
 </form>
 <br>
 <h3>카테고리 삭제</h3>
-<form id="delete-category-form">
+<form id="delete-categoryType-form">
     <label for="brand5">브랜드명:</label>
     <input type="text" id="brand5" name="brand"><br><br>
 
@@ -174,16 +174,16 @@
         <label for="ACCESSORY5">엑세서리</label><br>
     </fieldset>
 
-    <input type="submit" value="카테고리 삭제" id="delete-category">
+    <input type="submit" value="카테고리 삭제" id="delete-categoryType">
 </form>
 <br>
 <a href="#" th:href="@{'/home'}">홈으로</a>
 
 <script>
     $(document).ready(function () {
-        $('#delete-category-form').on('submit', function (event) {
+        $('#delete-categoryType-form').on('submit', function (event) {
             event.preventDefault();
-            console.log("delete-category");
+            console.log("delete-categoryType");
 
             var brand = $('#brand5').val();
             var selectedOption = $('input[name="category5"]:checked').val();
@@ -194,11 +194,11 @@
 
             var data = {
                 brandName: brand,
-                category: selectedOption,
+                categoryType: selectedOption,
             };
 
             $.ajax({
-                url: `/admin/category`,
+                url: `/admin/categoryType`,
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -212,9 +212,9 @@
             });
         });
 
-        $('#add-category-form').on('submit', function (event) {
+        $('#add-categoryType-form').on('submit', function (event) {
             event.preventDefault();
-            console.log("add-category");
+            console.log("add-categoryType");
 
             var brand = $('#brand4').val();
             var selectedOption = $('input[name="category4"]:checked').val();
@@ -227,12 +227,12 @@
 
             var data = {
                 brandName: brand,
-                category: selectedOption,
+                categoryType: selectedOption,
                 price: price
             };
 
             $.ajax({
-                url: `/admin/category`,
+                url: `/admin/categoryType`,
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -246,9 +246,9 @@
             });
         });
 
-        $('#modify-category-form').on('submit', function (event) {
+        $('#modify-categoryType-form').on('submit', function (event) {
             event.preventDefault();
-            console.log("modify-category");
+            console.log("modify-categoryType");
 
             var brand = $('#brand3').val();
             var selectedOption = $('input[name="category3"]:checked').val();
@@ -261,12 +261,12 @@
 
             var data = {
                 brandName: brand,
-                category: selectedOption,
+                categoryType: selectedOption,
                 price: price
             };
 
             $.ajax({
-                url: `/admin/category`,
+                url: `/admin/categoryType`,
                 method: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -308,35 +308,35 @@
                 brandName: brand,
                 categoryPriceDtos: [
                     {
-                        category: '상의',
+                        categoryType: '상의',
                         price: top
                     },
                     {
-                        category: '아우터',
+                        categoryType: '아우터',
                         price: outerwear
                     },
                     {
-                        category: '바지',
+                        categoryType: '바지',
                         price: pants
                     },
                     {
-                        category: '스니커즈',
+                        categoryType: '스니커즈',
                         price: sneakers
                     },
                     {
-                        category: '가방',
+                        categoryType: '가방',
                         price: bag
                     },
                     {
-                        category: '모자',
+                        categoryType: '모자',
                         price: hat
                     },
                     {
-                        category: '양말',
+                        categoryType: '양말',
                         price: socks
                     },
                     {
-                        category: '엑세서리',
+                        categoryType: '엑세서리',
                         price: accessory
                     }
                 ]

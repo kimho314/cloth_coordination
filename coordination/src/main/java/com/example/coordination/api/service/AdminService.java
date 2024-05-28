@@ -39,7 +39,7 @@ public class AdminService {
         return request.categoryPriceDtos().stream()
                 .map(it -> Goods.builder()
                         .brandName(request.brandName())
-                        .category(it.category())
+                        .categoryType(it.categoryType())
                         .price(it.price() == null ? 0 : it.price())
                         .build())
                 .toList();
@@ -47,7 +47,7 @@ public class AdminService {
 
     @Transactional
     public void modifyCategory(ModifyCategoryRequestDto request) {
-        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.category())
+        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.categoryType())
                 .orElseThrow(() -> new NoSuchElementException(request.brandName()));
 
         goods.setPrice(request.price());
@@ -66,7 +66,7 @@ public class AdminService {
         return goods.stream()
                 .map(it -> GoodsDto.builder()
                         .brandName(it.getBrandName())
-                        .category(it.getCategory())
+                        .categoryType(it.getCategoryType())
                         .price(it.getPrice())
                         .build())
                 .collect(Collectors.groupingBy(GoodsDto::brandName));
@@ -79,18 +79,18 @@ public class AdminService {
 
     @Transactional
     public void deleteCategory(DeleteCategoryRequestDto request) {
-        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.category())
-                .orElseThrow(() -> new NoSuchElementException(request.brandName() + " " + request.category()));
+        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.categoryType())
+                .orElseThrow(() -> new NoSuchElementException(request.brandName() + " " + request.categoryType()));
 
         goods.setPrice(null);
     }
 
     @Transactional
     public void addCategory(AddCategoryRequestDto request) {
-        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.category())
+        Goods goods = goodsRepository.findByBrandNameAndCategory(request.brandName(), request.categoryType())
                 .orElseThrow(NoSuchElementException::new);
         if (!Objects.isNull(goods.getPrice())) {
-            throw new CategoryFoundException(request.category().getValue());
+            throw new CategoryFoundException(request.categoryType().getValue());
         }
 
         goods.setPrice(request.price());
