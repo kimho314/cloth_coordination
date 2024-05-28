@@ -1,5 +1,27 @@
 drop all objects;
 
+create table BRAND
+(
+    ID         BIGINT auto_increment,
+    NAME       CHARACTER VARYING(100),
+    CREATED_AT TIMESTAMP default CURRENT_TIMESTAMP,
+    UPDATED_AT TIMESTAMP default CURRENT_TIMESTAMP,
+    constraint BRAND_PK
+        primary key (ID)
+);
+
+create table CATEGORY
+(
+    ID            BIGINT auto_increment,
+    BRAND_ID      BIGINT,
+    PRICE         INTEGER,
+    CREATED_AT    TIMESTAMP default CURRENT_TIMESTAMP,
+    UPDATED_AT    TIMESTAMP default CURRENT_TIMESTAMP,
+    CATEGORY_TYPE CHARACTER VARYING(100),
+    constraint CATEGORY_PK
+        primary key (ID)
+);
+
 create table GOODS
 (
     ID         BIGINT auto_increment,
