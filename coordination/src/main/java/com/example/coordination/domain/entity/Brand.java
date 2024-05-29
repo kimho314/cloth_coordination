@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "BRAND")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Brand extends BaseEntity2 {
+public class Brand extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,4 +23,10 @@ public class Brand extends BaseEntity2 {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "brand")
     private List<Category> categories = new ArrayList<>();
+
+    public Integer getPriceSum() {
+        return this.categories.stream()
+                .mapToInt(Category::getPrice)
+                .sum();
+    }
 }

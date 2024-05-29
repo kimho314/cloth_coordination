@@ -11,7 +11,7 @@ import lombok.*;
 @Table(name = "CATEGORY")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category extends BaseEntity2 {
+public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +22,7 @@ public class Category extends BaseEntity2 {
     @Column(length = 100, name = "CATEGORY_TYPE")
     private CategoryType categoryType;
 
-    @JoinColumn(name = "brand_id", referencedColumnName = "BRAND_ID")
+    @JoinColumn(name = "brand_id", referencedColumnName = "id")
     @ManyToOne
     private Brand brand;
 }

@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/client/**").hasRole("CLIENT")
+                        .requestMatchers("/client/**", "/api/**").hasRole("CLIENT")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
