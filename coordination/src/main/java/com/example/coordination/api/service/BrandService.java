@@ -23,15 +23,15 @@ public class BrandService {
                 .min(Comparator.comparing(Brand::getPriceSum))
                 .orElseThrow(NoSuchElementException::new);
 
-        String brandName = minBrand.getName();
-        List<CategoryPriceDto> categoryPriceDtos = minBrand.getCategories().stream()
+        return new BrandMinPriceResponseDto(minBrand.getName(), getCategoryPriceDtos(minBrand), (long) minBrand.getPriceSum());
+    }
+
+    private static List<CategoryPriceDto> getCategoryPriceDtos(Brand minBrand) {
+        return minBrand.getCategories().stream()
                 .map(it -> CategoryPriceDto.builder()
                         .categoryType(it.getCategoryType())
                         .price(it.getPrice())
                         .build())
                 .toList();
-        long totalPrice = minBrand.getPriceSum();
-
-        return new BrandMinPriceResponseDto(brandName, categoryPriceDtos, totalPrice);
     }
 }
