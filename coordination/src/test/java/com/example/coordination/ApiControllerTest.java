@@ -207,4 +207,37 @@ public class ApiControllerTest {
             Assertions.assertEquals(8, elem.categoryDtos().size());
         }
     }
+
+    @Test
+    @DisplayName("카테고리 저장 테스트")
+    @Transactional
+    void saveCategoryTest() throws Exception {
+        Brand brand = Brand.builder()
+                .name("Z")
+                .build();
+        Brand saved = brandRepository.saveAndFlush(brand);
+
+        SaveCategoryDto request = SaveCategoryDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.TOPS)
+                .price(10_000)
+                .build();
+
+        ResultActions perform = mvc.perform(post("/api/categories")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.writeValueAsString(request))
+        );
+
+        MvcResult mvcResult = perform.andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        CategoryDto response = OBJECT_MAPPER.readValue(contentAsString, new TypeReference<>() {
+        });
+
+        Assertions.assertEquals(request.categoryType(), response.categoryType());
+        Assertions.assertEquals(request.price(), response.price());
+    }
 }

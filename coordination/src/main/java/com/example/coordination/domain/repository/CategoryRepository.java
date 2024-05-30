@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllByCategoryType(CategoryType categoryType);
+
+    boolean existsByCategoryTypeAndBrand_Id(CategoryType categoryType, Long brandId);
 }

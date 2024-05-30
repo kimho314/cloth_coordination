@@ -1,11 +1,12 @@
 package com.example.coordination.api.service;
 
-import com.example.coordination.api.dto.BrandPriceDto;
-import com.example.coordination.api.dto.CategoryMinPriceDto;
-import com.example.coordination.api.dto.GetCategoriesMinPriceResponseDto;
-import com.example.coordination.api.dto.GetCategoryMinMaxPriceResponseDto;
+import com.example.coordination.api.dto.*;
+import com.example.coordination.common.exception.CategoryFoundException;
+import com.example.coordination.common.exception.NoBrandException;
+import com.example.coordination.domain.entity.Brand;
 import com.example.coordination.domain.entity.Category;
 import com.example.coordination.domain.enums.CategoryType;
+import com.example.coordination.domain.repository.BrandRepository;
 import com.example.coordination.domain.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
+    private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
@@ -67,5 +69,29 @@ public class CategoryService {
                         .build()));
 
         return new GetCategoryMinMaxPriceResponseDto(categoryType, minPrice.get(), maxPrice.get());
+    }
+
+    @Transactional
+    public CategoryDto save(SaveCategoryDto categoryDto) {
+        Brand brand = brandRepository.findById(categoryDto.brandId())
+                .orElseThrow(NoBrandException::new);
+
+        if (categoryRepository.existsByCategoryTypeAndBrand_Id(categoryDto.categoryType(), categoryDto.brandId())) {
+            throw new CategoryFoundException(categoryDto.categoryType().getValue());
+        }
+
+        Category category = Category.builder()
+                .brand(brand)
+                .categoryType(categoryDto.categoryType())
+                .price(categoryDto.price())
+                .build();
+        Category saved = categoryRepository.save(category);
+
+        return CategoryDto.builder()
+                .id(saved.getId())
+                .categoryType(saved.getCategoryType())
+                .price(saved.getPrice())
+                .createdAt(saved.getCreatedAt())
+                .build();
     }
 }

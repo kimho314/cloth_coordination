@@ -1,15 +1,15 @@
 package com.example.coordination.api.controller;
 
+import com.example.coordination.api.dto.CategoryDto;
 import com.example.coordination.api.dto.GetCategoriesMinPriceResponseDto;
 import com.example.coordination.api.dto.GetCategoryMinMaxPriceResponseDto;
+import com.example.coordination.api.dto.SaveCategoryDto;
 import com.example.coordination.api.service.CategoryService;
 import com.example.coordination.domain.enums.CategoryType;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -29,5 +29,9 @@ public class CategoryController {
         return ResponseEntity.ok(response);
     }
 
-
+    @PostMapping("")
+    public ResponseEntity<CategoryDto> saveCategory(@RequestBody @Valid SaveCategoryDto categoryDto) {
+        CategoryDto category = categoryService.save(categoryDto);
+        return ResponseEntity.ok(category);
+    }
 }
