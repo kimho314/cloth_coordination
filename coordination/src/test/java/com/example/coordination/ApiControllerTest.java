@@ -2,7 +2,9 @@ package com.example.coordination;
 
 import com.example.coordination.api.dto.*;
 import com.example.coordination.common.util.ObjectMapperFactory;
+import com.example.coordination.domain.entity.Brand;
 import com.example.coordination.domain.enums.CategoryType;
+import com.example.coordination.domain.repository.BrandRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -16,11 +18,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(value = "user", password = "1234", roles = {"CLIENT"})
@@ -31,6 +35,8 @@ public class ApiControllerTest {
 
     @Autowired
     MockMvc mvc;
+    @Autowired
+    BrandRepository brandRepository;
 
     @Test
     @DisplayName("카테고리 최저 가격 조회 테스트")
@@ -156,5 +162,28 @@ public class ApiControllerTest {
         Assertions.assertEquals("C", result.minPrice().brandName());
         Assertions.assertEquals("I", result.maxPrice().brandName());
         Assertions.assertEquals(11_400, result.maxPrice().price());
+    }
+
+    @Test
+    @DisplayName("브랜드 저장 테스트")
+    @Transactional
+    void addBrandTests() throws Exception {
+        AddBrandRequestDto request = AddBrandRequestDto.builder()
+                .brandName("J")
+                .build();
+
+        ResultActions perform = mvc.perform(post("/api/brands")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.writeValueAsString(request))
+        );
+
+        MvcResult mvcResult = perform.andExpect(status().isOk())
+                .andReturn();
+
+        Brand brand = brandRepository.findByName(request.brandName()).orElseThrow();
+        Assertions.assertEquals("J", brand.getName());
+        Assertions.assertNull(brand.getCategories());
     }
 }

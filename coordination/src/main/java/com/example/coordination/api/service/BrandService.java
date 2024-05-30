@@ -1,7 +1,9 @@
 package com.example.coordination.api.service;
 
+import com.example.coordination.api.dto.AddBrandRequestDto;
 import com.example.coordination.api.dto.BrandMinPriceResponseDto;
 import com.example.coordination.api.dto.CategoryPriceDto;
+import com.example.coordination.common.exception.DuplicateBrandException;
 import com.example.coordination.domain.entity.Brand;
 import com.example.coordination.domain.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,18 @@ public class BrandService {
                         .price(it.getPrice())
                         .build())
                 .toList();
+    }
+
+    @Transactional
+    public void save(AddBrandRequestDto addBrandRequestDto) {
+        Optional<Brand> maybeBrand = brandRepository.findByName(addBrandRequestDto.brandName());
+        if (maybeBrand.isPresent()) {
+            throw new DuplicateBrandException(addBrandRequestDto.brandName());
+        }
+
+        Brand brand = Brand.builder()
+                .name(addBrandRequestDto.brandName())
+                .build();
+        brandRepository.save(brand);
     }
 }
