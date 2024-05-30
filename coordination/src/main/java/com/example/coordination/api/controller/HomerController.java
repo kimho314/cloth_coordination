@@ -41,36 +41,4 @@ public class HomerController {
     public String home() {
         return "home";
     }
-
-    /**
-     * @title 카테고리 페이지
-     */
-    @GetMapping("/categories")
-    public String categories() {
-        return "categories";
-    }
-
-    /**
-     * @title 최소가격 브랜드 페이지
-     */
-    @GetMapping("/brand-min-price")
-    public String brandMinPrice() {
-        return "brand-min-price";
-    }
-
-    /**
-     * @title 카테고리 별 퇴소,퇴고 가격
-     */
-    @GetMapping("/category-min-max-price")
-    public String categoryMinMaxPrice() {
-        return "category-min-max-price";
-    }
-
-    /**
-     * @title 어드민 페이지
-     */
-    @GetMapping("/admin")
-    public String admin() {
-        return "admin";
-    }
 }
