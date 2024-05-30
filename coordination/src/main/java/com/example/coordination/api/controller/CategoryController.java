@@ -28,4 +28,6 @@ public class CategoryController {
         GetCategoryMinMaxPriceResponseDto response = categoryService.getCategoryMinMaxPrice(CategoryType.findByValue(category));
         return ResponseEntity.ok(response);
     }
+
+
 }

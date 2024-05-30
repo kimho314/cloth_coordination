@@ -1,8 +1,6 @@
 package com.example.coordination.api.service;
 
-import com.example.coordination.api.dto.AddBrandRequestDto;
-import com.example.coordination.api.dto.BrandMinPriceResponseDto;
-import com.example.coordination.api.dto.CategoryPriceDto;
+import com.example.coordination.api.dto.*;
 import com.example.coordination.common.exception.DuplicateBrandException;
 import com.example.coordination.domain.entity.Brand;
 import com.example.coordination.domain.repository.BrandRepository;
@@ -49,5 +47,26 @@ public class BrandService {
                 .name(addBrandRequestDto.brandName())
                 .build();
         brandRepository.save(brand);
+    }
+
+    @Transactional(readOnly = true)
+    public GetBrandsResponseDto getBrands() {
+        List<BrandDto> brandDtos = brandRepository.findAll().stream()
+                .map(it -> BrandDto.builder()
+                        .id(it.getId())
+                        .name(it.getName())
+                        .createdAt(it.getCreatedAt())
+                        .categoryDtos(it.getCategories().stream()
+                                .map(category -> CategoryDto.builder()
+                                        .id(category.getId())
+                                        .price(category.getPrice())
+                                        .categoryType(category.getCategoryType())
+                                        .createdAt(category.getCreatedAt())
+                                        .build())
+                                .toList())
+                        .build())
+                .toList();
+        
+        return new GetBrandsResponseDto(brandDtos);
     }
 }

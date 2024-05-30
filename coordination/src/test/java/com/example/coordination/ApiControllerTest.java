@@ -179,11 +179,32 @@ public class ApiControllerTest {
                 .content(OBJECT_MAPPER.writeValueAsString(request))
         );
 
-        MvcResult mvcResult = perform.andExpect(status().isOk())
-                .andReturn();
+        perform.andExpect(status().isOk());
 
         Brand brand = brandRepository.findByName(request.brandName()).orElseThrow();
         Assertions.assertEquals("J", brand.getName());
         Assertions.assertNull(brand.getCategories());
+    }
+
+    @Test
+    @DisplayName("브랜드 리스트 조회 테스트")
+    void getBrandsTest() throws Exception {
+        ResultActions perform = mvc.perform(get("/api/brands")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        );
+
+        MvcResult mvcResult = perform.andExpect(status().isOk())
+                .andReturn();
+
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        GetBrandsResponseDto response = OBJECT_MAPPER.readValue(contentAsString, new TypeReference<>() {
+        });
+
+        Assertions.assertEquals(9, response.brandDtos().size());
+        for (BrandDto elem : response.brandDtos()) {
+            Assertions.assertEquals(8, elem.categoryDtos().size());
+        }
     }
 }
