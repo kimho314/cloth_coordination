@@ -1,8 +1,8 @@
 package com.example.coordination.api.controller;
 
-import com.example.coordination.api.dto.AddBrandRequestDto;
 import com.example.coordination.api.dto.BrandMinPriceResponseDto;
 import com.example.coordination.api.dto.GetBrandsResponseDto;
+import com.example.coordination.api.dto.SaveBrandRequestDto;
 import com.example.coordination.api.service.BrandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ public class BrandController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Void> saveBrand(@RequestBody @Valid AddBrandRequestDto addBrandRequestDto) {
-        brandService.save(addBrandRequestDto);
+    public ResponseEntity<Void> saveBrand(@RequestBody @Valid SaveBrandRequestDto saveBrandRequestDto) {
+        brandService.save(saveBrandRequestDto);
         return ResponseEntity.ok().build();
     }
 

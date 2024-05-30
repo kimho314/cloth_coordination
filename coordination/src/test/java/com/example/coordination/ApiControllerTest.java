@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WithMockUser(value = "user", password = "1234", roles = {"CLIENT"})
+@WithMockUser(password = "1234", roles = {"CLIENT"})
 @AutoConfigureMockMvc
 @SpringBootTest
 public class ApiControllerTest {
@@ -168,7 +168,7 @@ public class ApiControllerTest {
     @DisplayName("브랜드 저장 테스트")
     @Transactional
     void addBrandTests() throws Exception {
-        AddBrandRequestDto request = AddBrandRequestDto.builder()
+        SaveBrandRequestDto request = SaveBrandRequestDto.builder()
                 .brandName("J")
                 .build();
 

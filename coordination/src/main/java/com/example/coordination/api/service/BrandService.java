@@ -37,14 +37,14 @@ public class BrandService {
     }
 
     @Transactional
-    public void save(AddBrandRequestDto addBrandRequestDto) {
-        Optional<Brand> maybeBrand = brandRepository.findByName(addBrandRequestDto.brandName());
+    public void save(SaveBrandRequestDto saveBrandRequestDto) {
+        Optional<Brand> maybeBrand = brandRepository.findByName(saveBrandRequestDto.brandName());
         if (maybeBrand.isPresent()) {
-            throw new DuplicateBrandException(addBrandRequestDto.brandName());
+            throw new DuplicateBrandException(saveBrandRequestDto.brandName());
         }
 
         Brand brand = Brand.builder()
-                .name(addBrandRequestDto.brandName())
+                .name(saveBrandRequestDto.brandName())
                 .build();
         brandRepository.save(brand);
     }
@@ -66,7 +66,7 @@ public class BrandService {
                                 .toList())
                         .build())
                 .toList();
-        
+
         return new GetBrandsResponseDto(brandDtos);
     }
 }
