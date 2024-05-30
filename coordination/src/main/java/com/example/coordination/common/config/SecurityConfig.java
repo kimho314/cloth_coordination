@@ -30,8 +30,6 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .sessionManagement(session -> session.maximumSessions(-1)
-                        .maxSessionsPreventsLogin(false))
                 .authorizeHttpRequests(request -> request.requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/login").permitAll()
@@ -45,7 +43,6 @@ public class SecurityConfig {
                         .successForwardUrl("/home")
                         .failureForwardUrl("/login?error"))
                 .logout((logout) -> logout.logoutUrl("/logout").permitAll());
-        ;
 
         return http.build();
     }
