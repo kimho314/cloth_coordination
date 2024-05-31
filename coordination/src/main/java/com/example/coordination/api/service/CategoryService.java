@@ -52,14 +52,13 @@ public class CategoryService {
                 .sorted(Comparator.comparingLong(Category::getId).reversed())
                 .toList();
 
-        AtomicReference<BrandPriceDto> minPrice = new AtomicReference<>();
-        categories.stream()
-                .min(Comparator.comparingInt(Category::getPrice))
-                .ifPresent(it -> minPrice.set(BrandPriceDto.builder()
-                        .brandName(it.getBrand().getName())
-                        .price(it.getPrice())
-                        .build()));
+        AtomicReference<BrandPriceDto> minPrice = getMinPrice(categories);
+        AtomicReference<BrandPriceDto> maxPrice = getMaxPrice(categories);
 
+        return new GetCategoryMinMaxPriceResponseDto(categoryType, minPrice.get(), maxPrice.get());
+    }
+
+    private static AtomicReference<BrandPriceDto> getMaxPrice(List<Category> categories) {
         AtomicReference<BrandPriceDto> maxPrice = new AtomicReference<>();
         categories.stream()
                 .max(Comparator.comparingInt(Category::getPrice))
@@ -67,8 +66,18 @@ public class CategoryService {
                         .brandName(it.getBrand().getName())
                         .price(it.getPrice())
                         .build()));
+        return maxPrice;
+    }
 
-        return new GetCategoryMinMaxPriceResponseDto(categoryType, minPrice.get(), maxPrice.get());
+    private static AtomicReference<BrandPriceDto> getMinPrice(List<Category> categories) {
+        AtomicReference<BrandPriceDto> minPrice = new AtomicReference<>();
+        categories.stream()
+                .min(Comparator.comparingInt(Category::getPrice))
+                .ifPresent(it -> minPrice.set(BrandPriceDto.builder()
+                        .brandName(it.getBrand().getName())
+                        .price(it.getPrice())
+                        .build()));
+        return minPrice;
     }
 
     @Transactional
