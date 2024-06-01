@@ -88,23 +88,31 @@ public class PriceService {
         }
 
         MinMaxCategoryDto minMaxCategoryDto = maybeMinMaxPrice.get();
-        BrandPriceDto minPrice = priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.minAmount())
-                .stream()
-                .findFirst()
-                .map(it -> BrandPriceDto.builder()
-                        .brandName(it.getBrand().getName())
-                        .price(it.getAmount())
-                        .build())
-                .orElseThrow(NoSuchElementException::new);
-        BrandPriceDto maxPrice = priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.maxAmount())
-                .stream()
-                .findFirst()
-                .map(it -> BrandPriceDto.builder()
-                        .brandName(it.getBrand().getName())
-                        .price(it.getAmount())
-                        .build())
-                .orElseThrow(NoSuchElementException::new);
+        BrandPriceDto minPrice = getMinPrice(category, minMaxCategoryDto);
+        BrandPriceDto maxPrice = getMaxPrice(category, minMaxCategoryDto);
 
         return new GetCategoryMinMaxPriceResponseDto(categoryType, minPrice, maxPrice);
+    }
+
+    private BrandPriceDto getMaxPrice(Category category, MinMaxCategoryDto minMaxCategoryDto) {
+        return priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.maxAmount())
+                .stream()
+                .findFirst()
+                .map(it -> BrandPriceDto.builder()
+                        .brandName(it.getBrand().getName())
+                        .price(it.getAmount())
+                        .build())
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private BrandPriceDto getMinPrice(Category category, MinMaxCategoryDto minMaxCategoryDto) {
+        return priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.minAmount())
+                .stream()
+                .findFirst()
+                .map(it -> BrandPriceDto.builder()
+                        .brandName(it.getBrand().getName())
+                        .price(it.getAmount())
+                        .build())
+                .orElseThrow(NoSuchElementException::new);
     }
 }
