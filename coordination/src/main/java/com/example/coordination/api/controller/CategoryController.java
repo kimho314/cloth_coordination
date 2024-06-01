@@ -1,6 +1,5 @@
 package com.example.coordination.api.controller;
 
-import com.example.coordination.api.dto.CategoryDto;
 import com.example.coordination.api.dto.SaveCategoryDto;
 import com.example.coordination.api.service.CategoryService;
 import jakarta.validation.Valid;
@@ -18,8 +17,8 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("")
-    public ResponseEntity<CategoryDto> saveCategory(@RequestBody @Valid SaveCategoryDto categoryDto) {
-        CategoryDto category = categoryService.save(categoryDto);
-        return ResponseEntity.ok(category);
+    public ResponseEntity<Void> saveCategory(@RequestBody @Valid SaveCategoryDto categoryDto) {
+        categoryService.save(categoryDto);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,13 +1,19 @@
 package com.example.coordination.api.service;
 
-import com.example.coordination.api.dto.CategoryDto;
 import com.example.coordination.api.dto.SaveCategoryDto;
+import com.example.coordination.common.exception.NoBrandException;
+import com.example.coordination.common.exception.NoCategoryException;
+import com.example.coordination.domain.entity.Brand;
+import com.example.coordination.domain.entity.Category;
+import com.example.coordination.domain.entity.Price;
 import com.example.coordination.domain.repository.BrandRepository;
 import com.example.coordination.domain.repository.CategoryRepository;
 import com.example.coordination.domain.repository.PriceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +24,25 @@ public class CategoryService {
 
 
     @Transactional
-    public CategoryDto save(SaveCategoryDto categoryDto) {
-        return null;
+    public void save(SaveCategoryDto categoryDto) {
+        Optional<Brand> maybeBrand = brandRepository.findById(categoryDto.brandId());
+        if (maybeBrand.isEmpty()) {
+            throw new NoBrandException();
+        }
+
+        Optional<Category> maybeCategory = categoryRepository.findByCategoryType(categoryDto.categoryType());
+        if (maybeCategory.isEmpty()) {
+            throw new NoCategoryException();
+        }
+
+        Brand brand = maybeBrand.get();
+        Category category = maybeCategory.get();
+
+        Price price = Price.builder()
+                .amount(categoryDto.price())
+                .category(category)
+                .brand(brand)
+                .build();
+        priceRepository.save(price);
     }
 }

@@ -23,6 +23,7 @@ public class Category extends BaseEntity {
     @Column(length = 100, name = "CATEGORY_TYPE")
     private CategoryType categoryType;
 
+    @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<Price> prices = new ArrayList<>();
 

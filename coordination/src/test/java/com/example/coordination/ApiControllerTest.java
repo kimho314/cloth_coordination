@@ -3,8 +3,12 @@ package com.example.coordination;
 import com.example.coordination.api.dto.*;
 import com.example.coordination.common.util.ObjectMapperFactory;
 import com.example.coordination.domain.entity.Brand;
+import com.example.coordination.domain.entity.Category;
+import com.example.coordination.domain.entity.Price;
 import com.example.coordination.domain.enums.CategoryType;
 import com.example.coordination.domain.repository.BrandRepository;
+import com.example.coordination.domain.repository.CategoryRepository;
+import com.example.coordination.domain.repository.PriceRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +41,10 @@ public class ApiControllerTest {
     MockMvc mvc;
     @Autowired
     BrandRepository brandRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private PriceRepository priceRepository;
 
     @Test
     @DisplayName("카테고리 최저 가격 조회 테스트")
@@ -186,7 +194,7 @@ public class ApiControllerTest {
     }
 
 
-    //    @Test
+    @Test
     @DisplayName("카테고리 저장 테스트")
     @Transactional
     void saveCategoryTest() throws Exception {
@@ -211,11 +219,9 @@ public class ApiControllerTest {
         MvcResult mvcResult = perform.andExpect(status().isOk())
                 .andReturn();
 
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        CategoryDto response = OBJECT_MAPPER.readValue(contentAsString, new TypeReference<>() {
-        });
-
-        Assertions.assertEquals(request.categoryType(), response.categoryType());
-        Assertions.assertEquals(request.price(), response.price());
+        Category category = categoryRepository.findByCategoryType(CategoryType.TOPS).orElseThrow();
+        Price price = priceRepository.findByCategoryAndBrand(category, saved).orElseThrow();
+        Assertions.assertEquals(request.categoryType(), price.getCategory().getCategoryType());
+        Assertions.assertEquals(request.price(), price.getAmount());
     }
 }
