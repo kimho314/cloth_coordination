@@ -32,27 +32,27 @@ public class PriceService {
     public GetCategoriesMinPriceResponseDto getCategoriesMinPrice() {
         List<MinCategoryDto> minCategoryPrices = priceRepository.findMinCategoryPrices();
 
-        long sum = minCategoryPrices.stream().mapToLong(MinCategoryDto::minAmount).sum();
-
         List<CategoryMinPriceDto> categoryMinPriceDtos = new ArrayList<>();
         for (MinCategoryDto elem : minCategoryPrices) {
             Optional<Price> maybePrice = priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(elem.categoryId(), elem.minAmount());
             if (maybePrice.isPresent()) {
                 Price price = maybePrice.get();
-                String brandName = price.getBrand().getName();
-                CategoryType categoryType = price.getCategory().getCategoryType();
 
                 categoryMinPriceDtos.add(
                         CategoryMinPriceDto.builder()
-                                .brandName(brandName)
-                                .category(categoryType.getValue())
+                                .brandName(price.getBrand().getName())
+                                .category(price.getCategory().getCategoryType().getValue())
                                 .price(price.getAmount())
                                 .build()
                 );
             }
         }
 
-        return new GetCategoriesMinPriceResponseDto(sum, categoryMinPriceDtos);
+        return new GetCategoriesMinPriceResponseDto(getSum(minCategoryPrices), categoryMinPriceDtos);
+    }
+
+    private static long getSum(List<MinCategoryDto> minCategoryPrices) {
+        return minCategoryPrices.stream().mapToLong(MinCategoryDto::minAmount).sum();
     }
 
     @Transactional(readOnly = true)
