@@ -4,6 +4,9 @@ import com.example.coordination.domain.enums.CategoryType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -16,13 +19,11 @@ public class Category extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer price;
-
     @Enumerated(EnumType.STRING)
     @Column(length = 100, name = "CATEGORY_TYPE")
     private CategoryType categoryType;
 
-    @JoinColumn(name = "brand_id", referencedColumnName = "id")
-    @ManyToOne
-    private Brand brand;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+    private List<Price> prices = new ArrayList<>();
+
 }

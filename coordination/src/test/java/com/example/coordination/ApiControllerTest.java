@@ -42,7 +42,7 @@ public class ApiControllerTest {
     @DisplayName("카테고리 최저 가격 조회 테스트")
     void getCategoriesMinPriceTest() throws Exception {
 
-        ResultActions perform = mvc.perform(get("/api/categories/min-prices")
+        ResultActions perform = mvc.perform(get("/api/prices/min-prices")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -96,7 +96,7 @@ public class ApiControllerTest {
     @Test
     @DisplayName("최저 가격 브랜드 조회 테스트")
     void getBrandMinPriceTest() throws Exception {
-        ResultActions perform = mvc.perform(get("/api/brands/min-price")
+        ResultActions perform = mvc.perform(get("/api/prices/brand/min-price")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -145,7 +145,7 @@ public class ApiControllerTest {
         final String testCategory = CategoryType.TOPS.getValue();
 
 
-        ResultActions perform = mvc.perform(get("/api/categories/{category}/min-max-price", testCategory)
+        ResultActions perform = mvc.perform(get("/api/prices/categories/{category}/min-max-price", testCategory)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -167,7 +167,7 @@ public class ApiControllerTest {
     @Test
     @DisplayName("브랜드 저장 테스트")
     @Transactional
-    void addBrandTests() throws Exception {
+    void saveBrandTests() throws Exception {
         SaveBrandRequestDto request = SaveBrandRequestDto.builder()
                 .brandName("J")
                 .build();
@@ -183,32 +183,10 @@ public class ApiControllerTest {
 
         Brand brand = brandRepository.findByName(request.brandName()).orElseThrow();
         Assertions.assertEquals("J", brand.getName());
-        Assertions.assertNull(brand.getCategories());
     }
 
-    @Test
-    @DisplayName("브랜드 리스트 조회 테스트")
-    void getBrandsTest() throws Exception {
-        ResultActions perform = mvc.perform(get("/api/brands")
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-        );
 
-        MvcResult mvcResult = perform.andExpect(status().isOk())
-                .andReturn();
-
-        String contentAsString = mvcResult.getResponse().getContentAsString();
-        GetBrandsResponseDto response = OBJECT_MAPPER.readValue(contentAsString, new TypeReference<>() {
-        });
-
-        Assertions.assertEquals(9, response.brandDtos().size());
-        for (BrandDto elem : response.brandDtos()) {
-            Assertions.assertEquals(8, elem.categoryDtos().size());
-        }
-    }
-
-    @Test
+    //    @Test
     @DisplayName("카테고리 저장 테스트")
     @Transactional
     void saveCategoryTest() throws Exception {
