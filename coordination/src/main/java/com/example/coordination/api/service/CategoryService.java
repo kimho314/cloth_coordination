@@ -15,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,24 +25,26 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public GetCategoriesMinPriceResponseDto getCategoriesMinPrice() {
-        AtomicLong totalPrice = new AtomicLong();
+        long totalPrice = 0;
         List<CategoryMinPriceDto> categoryMinPriceDtos = new ArrayList<>();
         for (CategoryType elem : CategoryType.values()) {
-            categoryRepository.findAllByCategoryType(elem).stream()
+            Optional<Category> maybeMin = categoryRepository.findAllByCategoryType(elem).stream()
                     .sorted(Comparator.comparingLong(Category::getId).reversed())
-                    .min(Comparator.comparing(Category::getPrice))
-                    .ifPresent(it -> {
-                        CategoryMinPriceDto minPriceDto = CategoryMinPriceDto.builder()
-                                .brandName(it.getBrand().getName())
-                                .price(it.getPrice())
-                                .category(it.getCategoryType().getValue())
-                                .build();
-                        totalPrice.addAndGet(it.getPrice());
-                        categoryMinPriceDtos.add(minPriceDto);
-                    });
+                    .min(Comparator.comparing(Category::getPrice));
+
+            if (maybeMin.isPresent()) {
+                Category min = maybeMin.get();
+                totalPrice += min.getPrice();
+                CategoryMinPriceDto minPriceDto = CategoryMinPriceDto.builder()
+                        .brandName(min.getBrand().getName())
+                        .price(min.getPrice())
+                        .category(min.getCategoryType().getValue())
+                        .build();
+                categoryMinPriceDtos.add(minPriceDto);
+            }
         }
 
-        return new GetCategoriesMinPriceResponseDto(totalPrice.get(), categoryMinPriceDtos);
+        return new GetCategoriesMinPriceResponseDto(totalPrice, categoryMinPriceDtos);
     }
 
     @Transactional(readOnly = true)
@@ -52,31 +53,38 @@ public class CategoryService {
                 .sorted(Comparator.comparingLong(Category::getId).reversed())
                 .toList();
 
-        AtomicReference<BrandPriceDto> minPrice = getMinPrice(categories);
-        AtomicReference<BrandPriceDto> maxPrice = getMaxPrice(categories);
+        BrandPriceDto minPrice = getMinPrice(categories);
+        BrandPriceDto maxPrice = getMaxPrice(categories);
 
-        return new GetCategoryMinMaxPriceResponseDto(categoryType, minPrice.get(), maxPrice.get());
+        return new GetCategoryMinMaxPriceResponseDto(categoryType, minPrice, maxPrice);
     }
 
-    private static AtomicReference<BrandPriceDto> getMaxPrice(List<Category> categories) {
-        AtomicReference<BrandPriceDto> maxPrice = new AtomicReference<>();
-        categories.stream()
-                .max(Comparator.comparingInt(Category::getPrice))
-                .ifPresent(it -> maxPrice.set(BrandPriceDto.builder()
-                        .brandName(it.getBrand().getName())
-                        .price(it.getPrice())
-                        .build()));
+    private static BrandPriceDto getMaxPrice(List<Category> categories) {
+        BrandPriceDto maxPrice = null;
+        Optional<Category> maybeMax = categories.stream()
+                .max(Comparator.comparingInt(Category::getPrice));
+        if (maybeMax.isPresent()) {
+            Category max = maybeMax.get();
+            maxPrice = BrandPriceDto.builder()
+                    .brandName(max.getBrand().getName())
+                    .price(max.getPrice())
+                    .build();
+        }
         return maxPrice;
     }
 
-    private static AtomicReference<BrandPriceDto> getMinPrice(List<Category> categories) {
-        AtomicReference<BrandPriceDto> minPrice = new AtomicReference<>();
-        categories.stream()
-                .min(Comparator.comparingInt(Category::getPrice))
-                .ifPresent(it -> minPrice.set(BrandPriceDto.builder()
-                        .brandName(it.getBrand().getName())
-                        .price(it.getPrice())
-                        .build()));
+    private static BrandPriceDto getMinPrice(List<Category> categories) {
+        BrandPriceDto minPrice = null;
+        Optional<Category> maybeMin = categories.stream()
+                .min(Comparator.comparingInt(Category::getPrice));
+
+        if (maybeMin.isPresent()) {
+            Category min = maybeMin.get();
+            minPrice = BrandPriceDto.builder()
+                    .brandName(min.getBrand().getName())
+                    .price(min.getPrice())
+                    .build();
+        }
         return minPrice;
     }
 
