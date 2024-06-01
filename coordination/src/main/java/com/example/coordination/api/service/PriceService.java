@@ -63,18 +63,21 @@ public class PriceService {
         }
 
         MinBrandDto minBrandDto = maybeMinBrandPrice.get();
+
         List<Price> prices = priceRepository.findAllByBrand_Id(minBrandDto.brandId());
         Brand brand = brandRepository.findById(minBrandDto.brandId())
                 .orElseThrow(NoSuchElementException::new);
 
-        List<CategoryPriceDto> categoryPriceDtos = prices.stream()
+        return new BrandMinPriceResponseDto(brand.getName(), getCategoryPriceDtos(prices), minBrandDto.sum());
+    }
+
+    private static List<CategoryPriceDto> getCategoryPriceDtos(List<Price> prices) {
+        return prices.stream()
                 .map(it -> CategoryPriceDto.builder()
                         .price(it.getAmount())
                         .categoryType(it.getCategory().getCategoryType())
                         .build())
                 .toList();
-
-        return new BrandMinPriceResponseDto(brand.getName(), categoryPriceDtos, minBrandDto.sum());
     }
 
     @Transactional(readOnly = true)
