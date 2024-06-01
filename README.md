@@ -121,13 +121,26 @@ PW : 1234
 
 ```mermaid
 erDiagram
-    GOODS {
-        BIGINT ID
-        VARCHAR(1000) brand_name
-        VARCHAR(255) CATEGORY
-        INTEGER PRICE
-        TIMESTAMP CREATED_AT
-        TIMESTAMP UPDATED_AT
-        INTEGER VERSION
+    BRAND ||--o{ PRICE : has
+    CATEGORY ||--o{ PRICE : has
+    BRAND {
+        BIGINT id
+        VARCHAR(100) name
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    PRICE{
+        BIGINT id
+        BIGINT brand_id
+        BIGINT category_id
+        INTEGER amount
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    CATEGORY{
+        BIGINT id
+        VARCHAR(100) category_type
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
     }
 ```
