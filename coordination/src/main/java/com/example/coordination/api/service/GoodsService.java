@@ -1,6 +1,7 @@
 package com.example.coordination.api.service;
 
 import com.example.coordination.api.dto.*;
+import com.example.coordination.common.exception.NoBrandException;
 import com.example.coordination.common.exception.NoCategoryException;
 import com.example.coordination.domain.dto.MinBrandDto;
 import com.example.coordination.domain.dto.MinCategoryDto;
@@ -117,5 +118,28 @@ public class GoodsService {
                         .price(it.getAmount())
                         .build())
                 .orElseThrow(NoSuchElementException::new);
+    }
+
+    @Transactional
+    public void save(SaveGoodsRequestDto request) {
+        Brand brand = brandRepository.findById(request.brandId())
+                .orElseThrow(NoBrandException::new);
+
+        List<Goods> newGoods = new ArrayList<>();
+        for (GoodsDto elem : request.goodsDtos()) {
+            Optional<Category> maybeCategory = categoryRepository.findByCategoryType(elem.categoryType());
+            if (maybeCategory.isPresent()) {
+                Category category = maybeCategory.get();
+                newGoods.add(
+                        Goods.builder()
+                                .category(category)
+                                .brand(brand)
+                                .amount(elem.amount())
+                                .build()
+                );
+            }
+        }
+        goodsRepository.saveAll(newGoods);
+        brand.setGoods(newGoods);
     }
 }

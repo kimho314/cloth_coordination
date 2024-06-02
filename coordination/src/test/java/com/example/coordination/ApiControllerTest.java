@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -223,5 +224,76 @@ public class ApiControllerTest {
         Goods goods = goodsRepository.findByCategoryAndBrand(category, saved).orElseThrow();
         Assertions.assertEquals(request.categoryType(), goods.getCategory().getCategoryType());
         Assertions.assertEquals(request.price(), goods.getAmount());
+    }
+
+    @Test
+    @DisplayName("상품 등록 테스트")
+    @Transactional
+    void saveGoodsTest() throws Exception {
+        Brand brand = Brand.builder()
+                .name("Z")
+                .build();
+        Brand saved = brandRepository.saveAndFlush(brand);
+
+
+        GoodsDto goods1 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.TOPS)
+                .amount(9_000)
+                .build();
+        GoodsDto goods2 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.OUTER)
+                .amount(9_000)
+                .build();
+        GoodsDto goods3 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.BAG)
+                .amount(9_000)
+                .build();
+        GoodsDto goods4 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.HAT)
+                .amount(9_000)
+                .build();
+        GoodsDto goods5 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.ACCESSORY)
+                .amount(9_000)
+                .build();
+        GoodsDto goods6 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.PANTS)
+                .amount(9_000)
+                .build();
+        GoodsDto goods7 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.SNEAKERS)
+                .amount(9_000)
+                .build();
+        GoodsDto goods8 = GoodsDto.builder()
+                .brandId(saved.getId())
+                .categoryType(CategoryType.SOCKS)
+                .amount(9_000)
+                .build();
+
+        SaveGoodsRequestDto request = SaveGoodsRequestDto.builder()
+                .brandId(saved.getId())
+                .goodsDtos(Arrays.asList(goods1, goods2, goods3, goods4, goods5, goods6, goods7, goods8))
+                .build();
+
+        ResultActions perform = mvc.perform(post("/api/goods")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(OBJECT_MAPPER.writeValueAsString(request))
+        );
+
+        MvcResult mvcResult = perform.andExpect(status().isOk())
+                .andReturn();
+
+        Brand found = brandRepository.findByName("Z").orElseThrow();
+        List<Goods> goodsList = found.getGoods();
+        Assertions.assertEquals(8, goodsList.size());
     }
 }
