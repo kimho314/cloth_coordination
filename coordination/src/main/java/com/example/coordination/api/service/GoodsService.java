@@ -7,11 +7,11 @@ import com.example.coordination.domain.dto.MinCategoryDto;
 import com.example.coordination.domain.dto.MinMaxCategoryDto;
 import com.example.coordination.domain.entity.Brand;
 import com.example.coordination.domain.entity.Category;
-import com.example.coordination.domain.entity.Price;
+import com.example.coordination.domain.entity.Goods;
 import com.example.coordination.domain.enums.CategoryType;
 import com.example.coordination.domain.repository.BrandRepository;
 import com.example.coordination.domain.repository.CategoryRepository;
-import com.example.coordination.domain.repository.PriceRepository;
+import com.example.coordination.domain.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,26 +23,26 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class PriceService {
-    private final PriceRepository priceRepository;
+public class GoodsService {
+    private final GoodsRepository goodsRepository;
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
     public GetCategoriesMinPriceResponseDto getCategoriesMinPrice() {
-        List<MinCategoryDto> minCategoryPrices = priceRepository.findMinCategoryPrices();
+        List<MinCategoryDto> minCategoryPrices = goodsRepository.findMinCategoryPrices();
 
         List<CategoryMinPriceDto> categoryMinPriceDtos = new ArrayList<>();
         for (MinCategoryDto elem : minCategoryPrices) {
-            Optional<Price> maybePrice = priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(elem.categoryId(), elem.minAmount());
+            Optional<Goods> maybePrice = goodsRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(elem.categoryId(), elem.minAmount());
             if (maybePrice.isPresent()) {
-                Price price = maybePrice.get();
+                Goods goods = maybePrice.get();
 
                 categoryMinPriceDtos.add(
                         CategoryMinPriceDto.builder()
-                                .brandName(price.getBrand().getName())
-                                .category(price.getCategory().getCategoryType().getValue())
-                                .price(price.getAmount())
+                                .brandName(goods.getBrand().getName())
+                                .category(goods.getCategory().getCategoryType().getValue())
+                                .price(goods.getAmount())
                                 .build()
                 );
             }
@@ -57,22 +57,22 @@ public class PriceService {
 
     @Transactional(readOnly = true)
     public BrandMinPriceResponseDto getBrandMinPrice() {
-        Optional<MinBrandDto> maybeMinBrandPrice = priceRepository.findFirstMinBrandPrice();
+        Optional<MinBrandDto> maybeMinBrandPrice = goodsRepository.findFirstMinBrandPrice();
         if (maybeMinBrandPrice.isEmpty()) {
             return null;
         }
 
         MinBrandDto minBrandDto = maybeMinBrandPrice.get();
 
-        List<Price> prices = priceRepository.findAllByBrand_Id(minBrandDto.brandId());
+        List<Goods> goods = goodsRepository.findAllByBrand_Id(minBrandDto.brandId());
         Brand brand = brandRepository.findById(minBrandDto.brandId())
                 .orElseThrow(NoSuchElementException::new);
 
-        return new BrandMinPriceResponseDto(brand.getName(), getCategoryPriceDtos(prices), minBrandDto.sum());
+        return new BrandMinPriceResponseDto(brand.getName(), getCategoryPriceDtos(goods), minBrandDto.sum());
     }
 
-    private static List<CategoryPriceDto> getCategoryPriceDtos(List<Price> prices) {
-        return prices.stream()
+    private static List<CategoryPriceDto> getCategoryPriceDtos(List<Goods> goods) {
+        return goods.stream()
                 .map(it -> CategoryPriceDto.builder()
                         .price(it.getAmount())
                         .categoryType(it.getCategory().getCategoryType())
@@ -85,7 +85,7 @@ public class PriceService {
         Category category = categoryRepository.findByCategoryType(categoryType)
                 .orElseThrow(NoCategoryException::new);
 
-        Optional<MinMaxCategoryDto> maybeMinMaxPrice = priceRepository.findMinMaxCategoryByCategoryId(category.getId());
+        Optional<MinMaxCategoryDto> maybeMinMaxPrice = goodsRepository.findMinMaxCategoryByCategoryId(category.getId());
         if (maybeMinMaxPrice.isEmpty()) {
             return null;
         }
@@ -98,7 +98,7 @@ public class PriceService {
     }
 
     private BrandPriceDto getMaxPrice(Category category, MinMaxCategoryDto minMaxCategoryDto) {
-        return priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.maxAmount())
+        return goodsRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.maxAmount())
                 .stream()
                 .findFirst()
                 .map(it -> BrandPriceDto.builder()
@@ -109,7 +109,7 @@ public class PriceService {
     }
 
     private BrandPriceDto getMinPrice(Category category, MinMaxCategoryDto minMaxCategoryDto) {
-        return priceRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.minAmount())
+        return goodsRepository.findFirstByCategory_IdAndAmountOrderByIdDesc(category.getId(), minMaxCategoryDto.minAmount())
                 .stream()
                 .findFirst()
                 .map(it -> BrandPriceDto.builder()

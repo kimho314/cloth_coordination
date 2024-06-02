@@ -4,11 +4,11 @@ import com.example.coordination.api.dto.*;
 import com.example.coordination.common.util.ObjectMapperFactory;
 import com.example.coordination.domain.entity.Brand;
 import com.example.coordination.domain.entity.Category;
-import com.example.coordination.domain.entity.Price;
+import com.example.coordination.domain.entity.Goods;
 import com.example.coordination.domain.enums.CategoryType;
 import com.example.coordination.domain.repository.BrandRepository;
 import com.example.coordination.domain.repository.CategoryRepository;
-import com.example.coordination.domain.repository.PriceRepository;
+import com.example.coordination.domain.repository.GoodsRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -44,13 +44,13 @@ public class ApiControllerTest {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private PriceRepository priceRepository;
+    private GoodsRepository goodsRepository;
 
     @Test
     @DisplayName("카테고리 최저 가격 조회 테스트")
     void getCategoriesMinPriceTest() throws Exception {
 
-        ResultActions perform = mvc.perform(get("/api/prices/min-prices")
+        ResultActions perform = mvc.perform(get("/api/goods/min-prices")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -104,7 +104,7 @@ public class ApiControllerTest {
     @Test
     @DisplayName("최저 가격 브랜드 조회 테스트")
     void getBrandMinPriceTest() throws Exception {
-        ResultActions perform = mvc.perform(get("/api/prices/brand/min-price")
+        ResultActions perform = mvc.perform(get("/api/goods/brand/min-price")
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -153,7 +153,7 @@ public class ApiControllerTest {
         final String testCategory = CategoryType.TOPS.getValue();
 
 
-        ResultActions perform = mvc.perform(get("/api/prices/categories/{category}/min-max-price", testCategory)
+        ResultActions perform = mvc.perform(get("/api/goods/categories/{category}/min-max-price", testCategory)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -220,8 +220,8 @@ public class ApiControllerTest {
                 .andReturn();
 
         Category category = categoryRepository.findByCategoryType(CategoryType.TOPS).orElseThrow();
-        Price price = priceRepository.findByCategoryAndBrand(category, saved).orElseThrow();
-        Assertions.assertEquals(request.categoryType(), price.getCategory().getCategoryType());
-        Assertions.assertEquals(request.price(), price.getAmount());
+        Goods goods = goodsRepository.findByCategoryAndBrand(category, saved).orElseThrow();
+        Assertions.assertEquals(request.categoryType(), goods.getCategory().getCategoryType());
+        Assertions.assertEquals(request.price(), goods.getAmount());
     }
 }

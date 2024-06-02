@@ -20,7 +20,7 @@ create table CATEGORY
         primary key (ID)
 );
 
-create table PRICE
+create table GOODS
 (
     id          bigint auto_increment,
     brand_id    bigint,
@@ -53,7 +53,7 @@ values ('TOPS'),
        ('SOCKS'),
        ('ACCESSORY');
 
-insert into PUBLIC.PRICE (BRAND_ID, CATEGORY_ID, AMOUNT)
+insert into PUBLIC.GOODS (BRAND_ID, CATEGORY_ID, AMOUNT)
 values (1, 1, 11200),
        (1, 2, 5500),
        (1, 3, 4200),

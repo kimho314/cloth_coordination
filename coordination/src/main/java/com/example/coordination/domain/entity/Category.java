@@ -25,6 +25,6 @@ public class Category extends BaseEntity {
 
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
-    private List<Price> prices = new ArrayList<>();
+    private List<Goods> goods = new ArrayList<>();
 
 }

@@ -5,10 +5,10 @@ import com.example.coordination.common.exception.NoBrandException;
 import com.example.coordination.common.exception.NoCategoryException;
 import com.example.coordination.domain.entity.Brand;
 import com.example.coordination.domain.entity.Category;
-import com.example.coordination.domain.entity.Price;
+import com.example.coordination.domain.entity.Goods;
 import com.example.coordination.domain.repository.BrandRepository;
 import com.example.coordination.domain.repository.CategoryRepository;
-import com.example.coordination.domain.repository.PriceRepository;
+import com.example.coordination.domain.repository.GoodsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ import java.util.Optional;
 public class CategoryService {
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
-    private final PriceRepository priceRepository;
+    private final GoodsRepository goodsRepository;
 
 
     @Transactional
@@ -38,11 +38,11 @@ public class CategoryService {
         Brand brand = maybeBrand.get();
         Category category = maybeCategory.get();
 
-        Price price = Price.builder()
+        Goods goods = Goods.builder()
                 .amount(categoryDto.price())
                 .category(category)
                 .brand(brand)
                 .build();
-        priceRepository.save(price);
+        goodsRepository.save(goods);
     }
 }

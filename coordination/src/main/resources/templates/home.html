@@ -10,9 +10,9 @@
 <body>
 <div class="menu">
     <li sec:authorize="hasRole('CLIENT')">
-        <a href="/categories" id="categories-min-price">카테고리 별 최저 가격 브랜드</a>
-        <a href="/brand-min-price" id="brand-min-price">최저 가격 브랜드</a>
-        <a href="/categoryType-min-max-price" id="categoryType-min-max-price">카테고리 최저,최고 가격</a>
+        <a href="/categories" id="categories-min-goods">카테고리 별 최저 가격 브랜드</a>
+        <a href="/brand-min-goods" id="brand-min-goods">최저 가격 브랜드</a>
+        <a href="/categoryType-min-max-goods" id="categoryType-min-max-goods">카테고리 최저,최고 가격</a>
     </li>
     <li sec:authorize="hasRole('ADMIN')">
         <a href="/admin">상품 리스트 조회</a>

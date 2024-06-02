@@ -7,10 +7,10 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
-@Table(name = "PRICE")
+@Table(name = "GOODS")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Price extends BaseEntity {
+public class Goods extends BaseEntity {
     @Id
     @Column(name = "ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
