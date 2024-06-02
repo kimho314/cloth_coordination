@@ -1,36 +1,21 @@
 # 구현 범위
 
--   유저와 운영자 계정을 구분하기 위해서 미리 계정을 memory 에 저장했습니다
--   유저 정보는 아래와 같습니다.
--   user : 카테고리 별 최저가격 브랜드와 상품 가격, 총액 조회 API, 단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와 카티고리의 상품가격, 총액 조회 API, 카테고리 이름으로 최저,최고 가격 브랜드와 상품 가격 조회 API 에 접근 할 수 있습니다
--   admin : 상품 목록 조회 API, 브랜드 추가 API, 브랜드 삭제 API, 카테고리 가격 수정 API, 카테고리 가격 삭제 API, 카테고리 가격 추가 API 에 접근 할 수 있습니다
-
-```
-유저
-ID : user
-PW : 1234
-
-운영자
-ID : admin
-PW : 1234
-```
-
 -   카테고리 별 최저가격 브랜드와 상품 가격, 총액 조회 API
 
 ```
-GET http://localhost:8080/client/categories/min-price
+GET http://localhost:8080/api/goods/min-price
 ```
 
 -   단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와 카티고리의 상품가격, 총액 조회 API
 
 ```
-GET http://localhost:8080/client/brand/min-price
+GET http://localhost:8080/api/goods/brand/min-price
 ```
 
 -   카테고리 이름으로 최저,최고 가격 브랜드와 상품 가격 조회 API
 
 ```
-GET http://localhost:8080/client/category/{category}/min-max-price
+GET http://localhost:8080/api/goods/category/{category}/min-max-price
 ```
 
 -   상품 목록 조회 API
@@ -42,31 +27,13 @@ GET http://localhost:8080/admin/goods
 -   브랜드 추가 API
 
 ```
-POST http://localhost:8080/admin/brand
+POST http://localhost:8080/api/brands
 ```
 
 -   브랜드 삭제 API
 
 ```
-DELETE http://localhost:8080/admin/brand/{brandName}
-```
-
--   카테고리 가격 수정 API
-
-```
-PUT http://localhost:8080/admin/category
-```
-
--   카테고리 가격 삭제 API
-
-```
-DELETE http://localhost:8080/admin/categor
-```
-
--   카테고리 가격 추가 API
-
-```
-POST http://localhost:8080/admin/category
+DELETE http://localhost:8080/api/brands/{brandName}
 ```
 
 # 코드 빌드 방법
@@ -118,7 +85,7 @@ erDiagram
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
-    PRICE{
+    GOODS{
         BIGINT id
         BIGINT brand_id
         BIGINT category_id
