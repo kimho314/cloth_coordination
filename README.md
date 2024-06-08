@@ -77,8 +77,8 @@ docker-compose up
 
 ```mermaid
 erDiagram
-    BRAND ||--o{ PRICE : has
-    CATEGORY ||--o{ PRICE : has
+    BRAND ||--o{ GOODS : has
+    CATEGORY ||--o{ GOODS : has
     BRAND {
         BIGINT id
         VARCHAR(100) name
